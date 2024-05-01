@@ -15,28 +15,26 @@ export const registrarUsuarios = async (req,res)=>{
             return res.status(403).json(errors)
         }
 
-        
-
         const{ identificacion, telefono, nombre, correo_electronico, tipo_usuario, password} = req.body
-        const [resultado] = await pool.query("INSERT INTO usuarios(identificacion, telefono, nombre, correo_electronico, tipo_usuario, password, estado) VALUES(?, ?, ?, ?, ?, ?, 1)",[identificacion, telefono, nombre, correo_electronico, tipo_usuario, password, ])
+        const [resultado] = await pool.query("INSERT INTO usuarios(identificacion, telefono, nombre, correo_electronico, tipo_usuario, password, estado) VALUES(?, ?, ?, ?, ?, ?, 1)",[identificacion, telefono, nombre, correo_electronico, tipo_usuario, password])
         if (resultado.affectedRows > 0) {
 
             res.status(201).json(
                 {
-                    "mensaje": "Usuario registrado con exito!!"
+                    message: "Usuario registrado con exito!!"
                 }
             )
             
         } else{
             res.status(403).json(
                 {
-                    "mensaje": "No se pudo registrar el usuario!"
+                    message: "No se pudo registrar el usuario!"
                 }
             )
         }
     } catch (error) {
         res.status(500).json({
-            "mensaje": "Error del servidor" + error
+            message: "Error del servidor" + error
         })
     }
 }
@@ -51,14 +49,14 @@ export const listarUsuarios=async(req,res)=>{
             res.status(200).json({usuarios})
         } else {
         res.status(404).json({
-            "mensaje":"No hay usuarios registrados"
+            message:"No hay usuarios registrados"
         })
         }
         
         
     } catch (error) {
         res.status(500).json({
-            "mensaje": "Error del servidor" + error
+            message: "Error del servidor" + error
         })
     }
 }
@@ -75,12 +73,12 @@ export const buscarUsuarios=async(req,res)=>{
             res.status(200).json(usuario)
         } else {
             res.status(404).json({
-                "mensaje":"el usuario no existe"
+                message:"el usuario no existe"
             })
         }
     } catch (error) {
         res.status(500).json({
-            "mensaje": "Error del servidor" + error
+            message: "Error del servidor" + error
         })
     }
 }
@@ -97,8 +95,7 @@ export const actualizarUsuarios = async (req,res)=>{
 
 
         const { identificacion } = req.params
-        const{ telefono, nombre, correo_electronico, tipo_usuario, estado
-        } = req.body
+        const{ telefono, nombre, correo_electronico, tipo_usuario } = req.body
         
         const [ usuarioAnterior ] = await pool.query("select * from usuarios where identificacion=?", [identificacion])
 
@@ -107,27 +104,27 @@ export const actualizarUsuarios = async (req,res)=>{
         nombre='${nombre ? nombre : usuarioAnterior[0].nombre}', 
         correo_electronico='${correo_electronico ? correo_electronico : usuarioAnterior[0].correo_electronico}', 
         tipo_usuario='${tipo_usuario ? tipo_usuario : usuarioAnterior[0].tipo_usuario}', 
-        estado='${estado ? estado : usuarioAnterior[0].estado}' where identificacion=? `, [identificacion])
+        estado=1 where identificacion=? `, [identificacion])
 
          if (resultado.affectedRows > 0) {
 
             res.status(201).json(
                 {
-                    "mensaje": "Usuario actualizado con exito!!"
+                    message: "Usuario actualizado con exito!!"
                 }
             )
             
         } else{
             res.status(404).json(
                 {
-                    "mensaje": "No se pudo actualizar el usuario!"
+                    message: "No se pudo actualizar el usuario!"
                 }
             )
         }
 
     } catch (error) {
         res.status(500).json({
-            "mensaje": "Error del servidor" + error
+            message: "Error del servidor" + error
         })
     }
 }
@@ -144,21 +141,47 @@ export const desactivarUsuarios = async (req,res)=>{
 
             res.status(201).json(
                 {
-                    "mensaje": "Usuario se desactivo con exito!!"
+                    message: "Usuario se desactivo con exito!!"
                 }
             )
             
         } else{
             res.status(404).json(
                 {
-                    "mensaje": "No se pudo desactivar el usuario!"
+                    message: "No se pudo desactivar el usuario!"
                 }
             )
         }
 
     } catch (error) {
         res.status(500).json({
-            "mensaje": "Error del servidor" + error
+            message: "Error del servidor" + error
+        })
+    }
+}
+
+export const activarUsuarios = async (req, res) => {
+    try {
+        const { identificacion } = req.params
+        let sql = `UPDATE usuarios SET estado = 1 WHERE identificacion = ?`
+
+        const [rows] = await pool.query(sql, [identificacion])
+
+        if(rows.affectedRows>0){
+            res.status(200).json({
+               'status': 200,
+               'message': 'Se activó con exito el usuario'
+            })
+        }else{
+            res.status(403).json({
+               'status': 403,
+               'message': 'No se pudo activar el usuario'
+            })
+        }
+    } catch (error) {
+        res.status(500).json({
+            status: 500,
+            message: 'Error en el servidor' + error
         })
     }
 }
