@@ -4,8 +4,11 @@ import UsuariosRegistro from '../page/Usuarios.Registro'
 import ModalSlidebar from './ModalSlidebar'
 import ModalUsuario from './ModalUsuario'
 import ModalPerfil from './ModalPerfil'
+import { useNavigation } from '@react-navigation/native'
 
 const HeaderPrincipal = ({title}) => {
+    const navigation = useNavigation()
+
 
     const [viewModal, setViewModal] = useState(false)
     const [menu, setMenu] = useState(false)
@@ -22,8 +25,13 @@ const HeaderPrincipal = ({title}) => {
         setPerfil(!perfil)
     }
 
-    const vista =()=>{
-        setViewModal(!viewModal)
+    const vistaPerfil =()=>{
+        setPerfil(false)
+        navigation.navigate('Perfil')
+        
+    }
+    const vistaMenu =()=>{
+        setMenu(false)
     }
 
     const slidebar =()=>{
@@ -49,9 +57,9 @@ const HeaderPrincipal = ({title}) => {
             </View>
         </View>
 
-    <ModalPerfil visible={perfil} onClose={modalP}/>
+    <ModalPerfil visible={perfil} onClose={modalP} navegacionPerfil={vistaPerfil}/>
 
-   <ModalSlidebar visible={menu} onClose={slidebar}/>
+   <ModalSlidebar visible={menu} onClose={slidebar} navegacionMenu={vistaMenu}/>
     </View>
     
     </>

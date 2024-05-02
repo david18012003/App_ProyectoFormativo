@@ -4,6 +4,7 @@ import React from 'react'
 import ListarUsuarios from '../page/ListarUsuarios';
 import Login from '../page/Login';
 import VistaPrincipal from '../page/VistaPrincipal';
+import PerfilUsuario from '../page/PerfilUsuario';
 
 const Stack = createNativeStackNavigator()
 
@@ -22,20 +23,19 @@ const StackNav = () => {
           },
           headerTintColor: '#fff', // Color del texto del encabezado
         }}/>
-        <Stack.Screen name='vista1'  component={VistaPrincipal} options={{
+        <Stack.Screen name='vista1'  component={VistaPrincipal} options={{headerShown:false}}/>
+        <Stack.Screen name='Listar' component={ListarUsuarios} options={{headerShown:false}}/>
+        <Stack.Screen name='Perfil' component={PerfilUsuario}   options={{
           headerTitleStyle: {
-            fontWeight: 'bold',
-            fontSize: 18, 
-            color: '#fff',
+            fontWeight: 'bold', // Establece el peso de la fuente
+            fontSize: 18, // Tamaño de la fuente
+            color: '#fff', // Color del texto
           },
           headerStyle: {
-            backgroundColor: '#39A900',
+            backgroundColor: '#336699', // Color de fondo del encabezado
           },
-          headerTintColor: '#fff', 
+          headerTintColor: '#fff', // Color del texto del encabezado
         }}/>
-        <Stack.Screen name='Listar' component={ListarUsuarios} options={{headerShown:false}}/>
-        {/* <Stack.Screen name='header' component={ModalPerfil}/> */}
-
       </Stack.Navigator>
   )
 }

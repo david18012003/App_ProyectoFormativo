@@ -1,4 +1,4 @@
-import { View, Text, Modal, TouchableOpacity } from 'react-native'
+import { View, Text, Modal, TouchableOpacity, ImageBackground } from 'react-native'
 import React from 'react'
 
 const ModalSlidebar = ( {visible,onClose}) => {
@@ -41,6 +41,7 @@ const ModalSlidebar = ( {visible,onClose}) => {
                                 // paddingHorizontal:10,
                             }}
                         >
+                            
                             <TouchableOpacity
                                 onPress={onClose}
                             >

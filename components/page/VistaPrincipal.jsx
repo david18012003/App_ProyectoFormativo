@@ -1,9 +1,11 @@
 import { View, Text, StyleSheet, Image } from 'react-native'
 import React from 'react'
+import HeaderPrincipal from '../Modales/HeaderPrincipal'
 
 const VistaPrincipal = () => {
   return (
     <>
+    <HeaderPrincipal/>
     <View style={styles.container}>
         <View style={styles.imagen}>
           <Image

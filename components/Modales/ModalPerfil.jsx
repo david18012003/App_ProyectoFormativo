@@ -3,12 +3,13 @@ import React, { useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import ModalAlerta from './ModalAlerta';
 
-const ModalPerfil = ({visible,onClose}) => {
+const ModalPerfil = ({visible,onClose,navegacionPerfil}) => {
     const [modalAlerta,setModalAlerta]=useState(false)
 
     const Alerta = ()=>{
         setModalAlerta(!modalAlerta)
     }
+   
   return (
     <Modal
             animationType="slide-from-left"
@@ -60,7 +61,7 @@ const ModalPerfil = ({visible,onClose}) => {
                         <View style={{
                             margin:12
                         }} >
-                            <TouchableOpacity>
+                            <TouchableOpacity onPress={navegacionPerfil}>
                                 <Text style={{
                                         color:"#000",
                                         fontSize:20,

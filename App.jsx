@@ -6,6 +6,7 @@ import ListarUsuarios from './components/page/ListarUsuarios'
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import VistaPrincipal from './components/page/VistaPrincipal';
+import ModalInternet from './components/Modales/ModalInternet';
 
 const Drawer = createDrawerNavigator();
 
@@ -18,6 +19,7 @@ const App = () => {
             <Drawer.Screen name='Usuarios' component={ListarUsuarios}/>
           </Drawer.Navigator> */}
           <StackNav/>
+          {/* <ModalInternet/> */}
        </NavigationContainer>
    </>
   )

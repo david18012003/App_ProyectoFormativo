@@ -2,12 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import axios from 'axios';
 import RNPickerSelect from 'react-native-picker-select';
-import { useNavigation } from '@react-navigation/native';
 import { IP } from './IP';
 import HeaderPrincipal from '../Modales/HeaderPrincipal';
 import ModalUsuario from '../Modales/ModalUsuario';
+import ModalInternet from '../Modales/ModalInternet';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import NetInfo from '@react-native-community/netinfo'
 
 const ListarUsuarios = () => {
   const [originalData, setOriginalData] = useState([]);
@@ -17,6 +17,7 @@ const ListarUsuarios = () => {
   const [selectedStatus, setSelectedStatus] = useState('');
   const [viewModal, setViewModal] = useState(false)
   const [tituloModal, setTituloModal] = useState('');
+  const [internetModal, setInternetModal] = useState(false);
   const [userData, setUserData] = useState(null)
   const [userId, setUserId] = useState(null)
 
@@ -31,6 +32,19 @@ const ListarUsuarios = () => {
 
     // console.log(userData)
 }
+useEffect(()=>{
+  const unsubscribe = NetInfo.addEventListener(state =>{
+    console.log('Tipo de conexion', state.type);
+    console.log('Is conected??', state.isConnected);
+    if (!state.isConnected) {
+      setInternetModal(true)
+    }
+  }) 
+  return()=>{
+    unsubscribe();
+  }
+  
+},[])
 
 
 
@@ -67,7 +81,9 @@ const ListarUsuarios = () => {
     }
   };
 
-  useEffect(() => { fetchData(); }, [])
+  useEffect(() => {
+     fetchData();
+     }, [])
 
   useEffect(() => {
     let filteredUsers = originalData;
@@ -214,6 +230,7 @@ const ListarUsuarios = () => {
             <Text style={{ fontSize: 24, textAlign: 'center', color: '#ffffff' }}>+</Text>
           </TouchableOpacity>
         </View>
+        <ModalInternet visible={internetModal} onClose={()=>setInternetModal(false)}/>
         <ModalUsuario visible={viewModal} onClose={vista} title={tituloModal} data={fetchData} userData={userData} userId={userId}/>
 
 

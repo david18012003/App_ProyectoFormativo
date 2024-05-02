@@ -1,9 +1,11 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image } from 'react-native'
-import React, { useState } from 'react'
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Alert } from 'react-native'
+import React, { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { IP } from './IP';
+import NetInfo from '@react-native-community/netinfo'
+
 
 
 // const ip = "192.168.143.19";
@@ -16,12 +18,31 @@ const Login = () => {
     correo_electronico: '',
     password: '',
   });
-
+  useEffect(()=>{
+    const unsubscribe = NetInfo.addEventListener(state =>{
+      console.log('Tipo de conexion', state.type);
+      console.log('Is conected??', state.isConnected);
+      if (!state.isConnected) {
+        Alert.alert('Sin conexion ', 'Por favor,  verifica tu conexion a internet.')
+    }
+    }) 
+    return()=>{
+      unsubscribe();
+    }
+    
+  },[])
+    
+  
   const handleInputChange = (name, value) => {
     setFormData({ ...formData, [name]: value });
   };
 
   const Validacion = async () =>{
+    const connectionInfo = await NetInfo.fetch()
+    if (!connectionInfo.isConnected) {
+      Alert.alert('Sin conexion ', 'Porfavor, verifica ti conexion a internet')
+      return
+    }
     console.log(formData)
     try {
       const baseURL = `http://${ip}:3000/validacion`;
@@ -37,21 +58,27 @@ const Login = () => {
         const storedUser = await AsyncStorage.getItem('user')
         const user = JSON.parse(storedUser)
         const userRol= user.tipo_usuario.toLowerCase()
+        const userStatus = user.estado
+        console.log(userStatus);
         console.log(userRol)
         
         const tokenAsyng = await AsyncStorage.getItem('token')
 
 
-        if (userRol == 'catador') {
+        if (userRol == 'catador' && userStatus=='activo') {
           navigation.navigate("Listar");
           console.log(tokenAsyng)
-          alert('Bienvenido Catador');
-        }else if (userRol === 'caficultor'){
+          Alert.alert('Bienvenido Catador');
+        }else if (userRol === 'caficultor' && userStatus=='activo'){
           navigation.navigate("vista1");
           console.log(tokenAsyng)
-          alert('Bienvenido Caficultor');
+          Alert.alert('Bienvenido Caficultor');
         }else{
-          alert("Su rol es: "+userRol);
+          if (userRol=='catador'&&userStatus=='inactivo' || userRol=='caficultor'&&userStatus=='inactivo') {
+            Alert.alert("Lo sentimor pero no esta activo en el sistema. ");
+          }else{
+            Alert.alert("Susdatos son erroneos ");
+          }
 
         }
         // navigation.navigate("vista1");
@@ -60,10 +87,10 @@ const Login = () => {
       
     } catch (error) {
       if (error.response && error.response.status === 404) {
-        alert('Usuario no registrado');
+        Alert.alert('Usuario no registrado');
       } else {
         console.error(error);
-        alert('Error del servidor');
+        Alert.alert('Error del servidor');
       }
     }
   }
