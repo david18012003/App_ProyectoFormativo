@@ -1,4 +1,4 @@
-import { View, Text, Modal, TouchableOpacity } from 'react-native'
+import { View, Text, Modal, TouchableOpacity, Image } from 'react-native'
 import React, { useState } from 'react'
 import { useNavigation } from '@react-navigation/native';
 import ModalAlerta from './ModalAlerta';
@@ -48,14 +48,13 @@ const ModalPerfil = ({visible,onClose,navegacionPerfil}) => {
                             <TouchableOpacity
                             onPress={onClose}
                             >
-                                <Text 
+                                <Image
                                     style={{
                                         width:30,
                                         height:30,
-                                        color:"#000",
-                                        fontSize:30
                                     }}
-                                >X</Text>
+                                    source={require('../../assets/cerrar.png')}
+                                />
                             </TouchableOpacity>
                         </View>
                         <View style={{
@@ -72,7 +71,8 @@ const ModalPerfil = ({visible,onClose,navegacionPerfil}) => {
                                 <Text style={{
                                         color:"#000",
                                         fontSize:20,
-                                        marginTop:30
+                                        marginTop:30,
+                                        marginBottom:10
                                     }}>Cerrar Sesion</Text>
                             </TouchableOpacity>
                         </View>

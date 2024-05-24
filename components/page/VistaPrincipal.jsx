@@ -9,8 +9,8 @@ const VistaPrincipal = () => {
     <View style={styles.container}>
         <View style={styles.imagen}>
           <Image
-            source={require('../../assets/logoProyecto.png')} // Ruta de la imagen
-            style={styles.imagen} // Estilo de la imagen
+            source={require('../../assets/logoProyecto.png')} 
+            style={styles.imagen} 
           />
         </View>
 

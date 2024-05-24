@@ -41,15 +41,14 @@ const ModalAlerta = ({visible,onClose,}) => {
                             <TouchableOpacity
                             onPress={onClose}
                             >
-                                <Text 
+                                <Image 
                                     style={{
-                                        textAlign:'center',
                                         width:30,
                                         height:30,
-                                        color:"#000",
-                                        fontSize:30
+                                        margin:10
                                     }}
-                                >X</Text>
+                                    source={require('../../assets/cerrar.png')}
+                                />
                             </TouchableOpacity>
                         </View>
                         
@@ -58,8 +57,8 @@ const ModalAlerta = ({visible,onClose,}) => {
                         }} >
                             <View style={{justifyContent: 'center', alignItems: 'center' }}>
                                 <Image
-                                    source={require('../../assets/Alerta.png')} // Ruta de la imagen
-                                    style={{ width: 200, height: 200 }} // Estilo de la imagen
+                                    source={require('../../assets/Alerta.png')} 
+                                    style={{ width: 200, height: 200 }}
                                 />
                             </View>
                             <View>

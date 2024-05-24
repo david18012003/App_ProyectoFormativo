@@ -1,4 +1,4 @@
-import { View, Text, Modal, Button, TouchableOpacity } from 'react-native'
+import { View, Text, Modal, Button, TouchableOpacity, Image } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import UsuariosRegistro from '../page/Usuarios.Registro'
 import ModalSlidebar from './ModalSlidebar'
@@ -40,19 +40,19 @@ const HeaderPrincipal = ({title}) => {
 
   return (
     <>
-    <View style={{felx:1, backgroundColor:'#336699'}}>
-        <View style={{flexDirection:'row', width:240,height:50,}}>
-            <View style={{marginTop:5, marginStart:10}}>
+    <View style={{ backgroundColor:'#336699'}}>
+    <View style={{ flexDirection: 'row', width: '100%', height: 50 }}>
+            <View style={{ marginLeft: '5%', marginRight: 'auto' }}>
                 <TouchableOpacity onPress={slidebar}>
-                    <Text style={{fontSize:25}}>◘</Text>
+                    <Image style={{ width: 30, height: 30, marginTop: 10 }} source={require('../../assets/Menu.png')} />
                 </TouchableOpacity>
             </View>
-            <View style={{alignContent:'center', alignItems:'center',justifyContent:'center', marginStart:120}}>
-                    <Text style={{fontSize:20,color:'#000'}}>{nameHeader}</Text>
+            <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                <Text style={{ fontSize: 20, color:"#fff" }}>{nameHeader}</Text>
             </View>
-            <View style={{marginStart:120, marginTop:5}}>
+            <View style={{ marginRight: '5%', marginLeft: 'auto' }}>
                 <TouchableOpacity onPress={modalP}>
-                    <Text style={{fontSize:30}}>☺</Text>
+                    <Image style={{width:30, height:30, marginTop:10}} source={require('../../assets/Perfil.png')}/>
                 </TouchableOpacity>
             </View>
         </View>

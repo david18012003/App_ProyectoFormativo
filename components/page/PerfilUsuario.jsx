@@ -66,7 +66,7 @@ const Perfil = () => {
         <View style={styles.container}>
           <View style={styles.profileHeader}>
             <Image
-              source={require('../../assets/avatar.png')} 
+              source={require('../../assets/usuario-de-perfil.png')} 
               style={styles.avatar}
             />
             <Text style={styles.headerText}>Bienvenido:</Text>

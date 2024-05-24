@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Alert } from 'react-native'
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Image, Alert, ImageBackground } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { useNavigation } from '@react-navigation/native'
 import axios from 'axios';
@@ -18,6 +18,13 @@ const Login = () => {
     correo_electronico: '',
     password: '',
   });
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
+
+
+  const toggleSecureEntry = () => {
+    setSecureTextEntry(!secureTextEntry);
+  };
+
   useEffect(()=>{
     const unsubscribe = NetInfo.addEventListener(state =>{
       console.log('Tipo de conexion', state.type);
@@ -66,7 +73,7 @@ const Login = () => {
 
 
         if (userRol == 'catador' && userStatus=='activo') {
-          navigation.navigate("Listar");
+          navigation.navigate("ListarUsuarios");
           console.log(tokenAsyng)
           Alert.alert('Bienvenido Catador');
         }else if (userRol === 'caficultor' && userStatus=='activo'){
@@ -97,93 +104,132 @@ const Login = () => {
 
   return (
     <>
+    <ImageBackground
+        source={require('../../assets/Login.png')} 
+        style={styles.background}
+      >
       <View style={styles.container}>
-        <View style={styles.imagen}>
+        
           <Image
-            source={require('../../assets/logoProyecto.png')} // Ruta de la imagen
+            source={require('../../assets/logoProyectoNegro.png')} // Ruta de la imagen
             style={styles.imagen} // Estilo de la imagen
           />
-        </View>
+        
         <View style={styles.formulario}>
           <Text style={styles.titulo}>INICIAR SESION </Text>
-          <Text style={styles.etiqueta}>Correo electronico:</Text>
-          <TextInput style={styles.input} placeholderTextColor="#999"  value={formData.correo_electronico} onChangeText={(text) => handleInputChange('correo_electronico', text)} placeholder='Correo electronico'/>
-          <Text style={styles.etiqueta}>Contraseña:</Text>
-          <TextInput style={styles.input}  placeholderTextColor="#999"  value={formData.password} onChangeText={(text) => handleInputChange('password', text)} placeholder='Contraseña' secureTextEntry={true}/>
-
+          <TextInput style={styles.input} placeholderTextColor="#000"  value={formData.correo_electronico} onChangeText={(text) => handleInputChange('correo_electronico', text)} placeholder='Correo'/>
+          <View style={styles.passwordInputContainer}>
+          <TextInput
+            style={styles.passwordInput}
+            placeholderTextColor="#000"
+            value={formData.password}
+            onChangeText={(text) => handleInputChange('password', text)}
+            placeholder="Contraseña"
+            secureTextEntry={secureTextEntry}
+          />
+          <TouchableOpacity onPress={toggleSecureEntry} style={styles.eyeIconContainer}>
+            <Image
+              style={styles.eyeIcon}
+              source={secureTextEntry ? require('../../assets/cerrar-ojo.png') : require('../../assets/ojo.png')}
+            />
+          </TouchableOpacity>
+        </View>
           <TouchableOpacity style={styles.boton} onPress={Validacion}>
             <Text style={styles.textoBoton}>Iniciar Sesion</Text>
           </TouchableOpacity>
         </View>
+        <View>
+          <TouchableOpacity>
+            <Text >¿Olvidaste tu contraseña?</Text>
+          </TouchableOpacity>
+        </View>
       </View>
+      </ImageBackground>
     </>
   )
 }
 
 const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    resizeMode: 'cover',
+    justifyContent: 'center',
+  },
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor:'#fff',
     paddingHorizontal: 20,
+    
   },
   titulo: {
     fontSize: 24,
     fontWeight: 'bold',
-    textAlign:'center',
+    textAlign: 'center',
     marginBottom: 20,
-    color:"#000",
+    color: '#000',
   },
   formulario: {
     width: '100%',
     borderWidth: 1,
-    borderColor: '#ccc',
-    backgroundColor:'#D9D9D9',
     borderRadius: 10,
+    borderColor: 'transparent',
     padding: 20,
     marginBottom: 20,
   },
-  etiqueta: {
-    fontSize: 16,
-    marginBottom: 5,
-    color:"#000",
-  },
   input: {
     height: 40,
-    borderColor: '#9c9c9c',
-    backgroundColor:'#fff',
+    borderColor: 'transparent',
+    backgroundColor: '#58AAD8',
     borderRadius: 10,
-    borderWidth: 1,
     marginBottom: 10,
     paddingHorizontal: 10,
-    color:'#000'
+    color: '#000',
   },
   boton: {
-    backgroundColor: '#336699',
+    backgroundColor: '#337FA9',
     paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 30,
-    marginTop:10,
-    marginStart:60,
-    height:50,
-    width:180,
+    borderRadius: 10,
+    marginTop: 10,
+    height:40
   },
   textoBoton: {
     color: '#fff',
-    fontSize: 16,
-    textAlign:'center',
+    fontSize: 20,
+    marginTop: -5,
+    textAlign: 'center',
     fontWeight: 'bold',
   },
   imagen: {
-    backgroundColor: "#d9d9d9",
-    borderRadius: 30,
-    alignItems: 'center', 
+    alignItems: 'center',
     justifyContent: 'center',
-    marginBottom:40, 
-    height: 250,
-    width: 250,
-  }
+    marginBottom: 10,
+    height: 230,
+    width: 230,
+  },
+  passwordInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 40,
+    borderColor: 'tranparent',
+    backgroundColor: '#58AAD8',
+    borderRadius: 10,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+    color: '#000',
+  },
+  passwordInput: {
+    flex: 1,
+    fontSize: 16,
+    paddingVertical: 10,
+  },
+  eyeIconContainer: {
+    padding: 10,
+  },
+  eyeIcon: {
+    width: 24,
+    height: 24,
+  },
 });
 
 export default Login;
