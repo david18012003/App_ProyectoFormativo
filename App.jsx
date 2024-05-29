@@ -7,6 +7,15 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import { NavigationContainer } from '@react-navigation/native';
 import VistaPrincipal from './components/page/VistaPrincipal';
 import ModalInternet from './components/Modales/ModalInternet';
+import PDFCreator from './components/generadorPDF/PDFCreator';
+import ModalSlidebar from './components/Modales/ModalSlidebar';
+import Analisis from './components/page/Analisis';
+import BotonesTabs from './components/Templates/BotonesTabs';
+import ListarVariables from './components/page/variables';
+import Muestras from './components/page/muestras';
+import ListarFincas from './components/page/ListarFincas';
+import ListarLotes from './components/page/ListarLotes';
+import ListarVariedades from './components/page/ListarVariedades';
 
 const Drawer = createDrawerNavigator();
 
@@ -19,7 +28,13 @@ const App = () => {
             <Drawer.Screen name='Usuarios' component={ListarUsuarios}/>
           </Drawer.Navigator> */}
           <StackNav/>
-          {/* <ModalInternet/> */}
+          {/* <BotonesTabs/> */}
+          {/* <Analisis/> */}
+          {/* <Muestras/> */}
+          {/* <ListarFincas/> */}
+          {/* <ModalSlidebar/> */}
+          {/* <ListarVariedades/> */}
+          {/* <ListarLotes/> */}
        </NavigationContainer>
    </>
   )

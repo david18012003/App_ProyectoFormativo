@@ -34,8 +34,8 @@ const ModalInternet = ({visible,onClose,}) => {
                         }} >
                             <View style={{justifyContent: 'center', alignItems: 'center' }}>
                                 <Image
-                                    source={require('../../assets/Alerta.png')} // Ruta de la imagen
-                                    style={{ width: 200, height: 200 }} // Estilo de la imagen
+                                    source={require('../../assets/Alerta.png')} 
+                                    style={{ width: 200, height: 200 }} 
                                 />
                             </View>
                             <View>
