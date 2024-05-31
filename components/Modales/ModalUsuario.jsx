@@ -5,9 +5,9 @@ import UserModel from '../Organismos/UserModel';
 
 const ModalUsuario = ({visible, onClose, title, data, userData, userId}) => {
     const colors = {
-        white: 'rgb(151, 154, 154)',
+        white: 'rgb(255, 255, 255)',
         teal: 'rgb(0, 128, 128)',
-        tealGradient: ['rgb(242, 243, 244 )', 'rgb(151, 154, 154)']
+        tealGradient: ['rgb(255, 255, 255)', 'rgb(20,40,60)']
     };
 
     return (
@@ -27,8 +27,8 @@ const ModalUsuario = ({visible, onClose, title, data, userData, userId}) => {
                 <LinearGradient
                     colors={colors.tealGradient}
                     style={{
-                        height:"90%",
-                        width:"90%",
+                        height:650,
+                        width:350,
                         borderRadius:5
                     }}
                 >
@@ -44,9 +44,7 @@ const ModalUsuario = ({visible, onClose, title, data, userData, userId}) => {
                         <TouchableOpacity onPress={onClose}>
                             <Image
                                 style={{
-                                    width:30,
-                                    height:30,
-                                    margin:10
+                                    margin:15
                                 }}
                                 source={require('../../assets/cerrar.png')}
                             />

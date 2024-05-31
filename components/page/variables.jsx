@@ -16,6 +16,8 @@ import {IP} from './IP';
 import HeaderPrincipal from '../Modales/HeaderPrincipal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ModalVariables from '../Modales/ModalVariables';
+import { useFocusEffect } from '@react-navigation/native';
+import { sharedStyles } from '../../public/Colores';
 
 const ListarVariables = () => {
   const [originalData, setOriginalData] = useState([]);
@@ -32,6 +34,23 @@ const ListarVariables = () => {
     nombre: '',
     fk_tipo_analisis: null,
   });
+  const [isDarkMode ,setIsDarkMode] =useState(false)
+
+  const mode = async()=>{
+    try {
+      const storedMode = await AsyncStorage.getItem('isDarkMode')
+      if (storedMode !== null) {
+        setIsDarkMode(JSON.parse(storedMode))
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+  useFocusEffect(
+    React.useCallback(() => {
+      mode();
+    }, [])
+  );
 
   const ip = IP;
 
@@ -188,17 +207,17 @@ const ListarVariables = () => {
   return (
     <>
       <HeaderPrincipal title="Variables" />
-      <View style={styles.container}>
-        <View style={styles.inputContainer}>
-          <View style={styles.selectContainer}>
+      <View style={[sharedStyles.container, !isDarkMode ? sharedStyles.conteinerNoche : sharedStyles.conteinerDia]}>
+        <View style={sharedStyles.inputContainer}>
+          <View style={sharedStyles.selectContainer}>
             <TextInput
-              style={styles.input}
+              style={sharedStyles.input}
               placeholderTextColor="#999"
               placeholder="Buscar variable"
               onChangeText={setSearchTerm}
               value={searchTerm}
             />
-            <View style={styles.pickerContainer}>
+            <View style={sharedStyles.pickerContainer}>
               <RNPickerSelect
                 style={pickerSelectStyles}
                 useNativeAndroidPickerStyle={false}
@@ -215,7 +234,7 @@ const ListarVariables = () => {
                 }
               />
             </View>
-            <View style={styles.pickerContainer}>
+            <View style={sharedStyles.pickerContainer}>
               <RNPickerSelect
                 onValueChange={value => setSelectedStatus(value)}
                 placeholder={{label: 'Estado', value: null}}
@@ -229,50 +248,50 @@ const ListarVariables = () => {
             </View>
           </View>
         </View>
-        <ScrollView style={styles.scrollView}>
+        <ScrollView style={sharedStyles.scrollView}>
           {filteredData.map(variable => (
-            <View key={variable.v_codigo} style={styles.userContainer}>
-              <View style={styles.itemContainer}>
-                <Text style={styles.key}>Código Variable:</Text>
-                <Text style={[styles.value, {color: '#000'}]}>
+            <View key={variable.v_codigo} style={[sharedStyles.userContainer, !isDarkMode ? sharedStyles.conteinerDia : sharedStyles.conteinerNoche]}>
+              <View style={sharedStyles.itemContainer}>
+                <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>Código Variable:</Text>
+                <Text style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>
                   {variable.v_codigo}
                 </Text>
               </View>
-              <View style={styles.itemContainer}>
-                <Text style={styles.key}>Nombre:</Text>
-                <Text style={[styles.value, {color: '#000'}]}>
+              <View style={sharedStyles.itemContainer}>
+                <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>Nombre:</Text>
+                <Text style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>
                   {variable.nombre}
                 </Text>
               </View>
-              <View style={styles.itemContainer}>
-                <Text style={styles.key}>Tipo de análisis:</Text>
-                <Text style={[styles.value, {color: '#000'}]}>
+              <View style={sharedStyles.itemContainer}>
+                <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>Tipo de análisis:</Text>
+                <Text style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>
                   {getTipoAnalisisNombre(variable.tipo_analisis)}
                 </Text>
               </View>
-              <View style={styles.itemContainer}>
-                <Text style={styles.key}>Estado:</Text>
+              <View style={sharedStyles.itemContainer}>
+                <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>Estado:</Text>
                 <Text
                   style={[
-                    styles.value,
+                    sharedStyles.value,
                     variable.estado === 'activo'
-                      ? styles.active
-                      : styles.inactive,
+                      ? sharedStyles.active
+                      : sharedStyles.inactive,
                   ]}>
                   {variable.estado}
                 </Text>
               </View>
-              <View style={styles.contenedorBtn}>
-                <View style={styles.itemContainer}>
+              <View style={sharedStyles.contenedorBtn}>
+                <View style={sharedStyles.itemContainer}>
                   <TouchableOpacity
                     onPress={() =>
                       vista('Actualizar', variable, variable.v_codigo)
                     }
-                    style={styles.button}>
-                    <Text style={styles.actualizar}>Actualizar</Text>
+                    style={sharedStyles.button}>
+                    <Text style={sharedStyles.actualizar}>Actualizar</Text>
                   </TouchableOpacity>
                 </View>
-                <View style={styles.buttonContainerD}>
+                <View style={sharedStyles.buttonContainerD}>
                   <TouchableOpacity
                     onPress={() =>
                       variable.estado === 'activo'
@@ -281,10 +300,10 @@ const ListarVariables = () => {
                     }
                     style={[
                       variable.estado === 'activo'
-                        ? styles.buttonD
-                        : styles.buttonDa,
+                        ? sharedStyles.buttonD
+                        : sharedStyles.buttonDa,
                     ]}>
-                    <Text style={styles.actualizar}>
+                    <Text style={sharedStyles.actualizar}>
                       {variable.estado === 'activo' ? 'Desactivar' : 'Activar'}
                     </Text>
                   </TouchableOpacity>
@@ -294,10 +313,10 @@ const ListarVariables = () => {
           ))}
         </ScrollView>
 
-        <View style={styles.addButton}>
+        <View style={sharedStyles.addButton}>
           <TouchableOpacity onPress={() => vista('Registrar')}>
             <Image
-              style={styles.addImage}
+              style={sharedStyles.addImage}
               source={require('../../assets/mas.png')}
             />
           </TouchableOpacity>
@@ -387,7 +406,6 @@ const styles = StyleSheet.create({
     color: '#000',
     padding: 10,
     borderRadius: 5,
-    alignItems: 'center',
   },
   actualizar: {
     color: '#fff',
@@ -399,29 +417,15 @@ const styles = StyleSheet.create({
     backgroundColor: '#FF3200',
     padding: 10,
     borderRadius: 5,
-    alignItems: 'center',
+    
   },
   buttonDa: {
     backgroundColor: '#039B1E',
     padding: 10,
     borderRadius: 5,
-    alignItems: 'center',
+    
   },
-  addButton: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20,
-    backgroundColor: '#336699',
-    borderRadius: 50,
-    height: 40,
-    width: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  addImage: {
-    width: 50,
-    height: 50,
-  },
+  
 });
 
 const pickerSelectStyles = StyleSheet.create({

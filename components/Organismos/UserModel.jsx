@@ -65,11 +65,12 @@ const UserModel = ({closeModal, title, data, userData, userId}) => {
 
   return (
     <>
-      <ScrollView>
+      
         <View style={styles.container}>
           <Text style={styles.titulo}>{title} Usuario</Text>
             <Image style={styles.Imagen} source={require('../../assets/logoProyectoNegro.png')}/>
-          <View style={styles.formulario}>
+        
+          <View style={styles.formulario}><ScrollView>
             <TextInput
               style={styles.input}
               placeholderTextColor="#000"
@@ -144,17 +145,19 @@ const UserModel = ({closeModal, title, data, userData, userId}) => {
                 value={formData.tipo_usuario}
                 style={pickerSelectStyles}
                 useNativeAndroidPickerStyle={false}
-              />
-            </View>
-          </View>
-
-          <TouchableOpacity
+              /><TouchableOpacity
             style={styles.boton}
             onPress={title === 'Registrar' ? handleSubmit : handleActualizar}>
             <Text style={styles.textoBoton}>{title}</Text>
           </TouchableOpacity>
+            </View>
+            </ScrollView>
+          </View>
+
+          
+          
         </View>
-      </ScrollView>
+      
     </>
   );
 };
@@ -172,7 +175,7 @@ const styles = StyleSheet.create({
   },
   innerContainer: {
     width: '80%',
-    backgroundColor: '#fff',
+    backgroundColor: '#000',
     borderRadius: 10,
     padding: 20,
   },
@@ -194,7 +197,6 @@ const styles = StyleSheet.create({
   },
   formulario: {
     marginBottom: 20,
-    marginTop:25
   },
   Imagen:{
     height:200,
@@ -211,15 +213,15 @@ const styles = StyleSheet.create({
     width: 300,
     borderColor: '#000',
     backgroundColor: 'transparent',
-    borderRadius: 10,
+    borderRadius: 5,
     borderWidth: 2,
     marginBottom: 10,
     paddingHorizontal: 10,
-    color: '#fff',
+    color: '#000',
   },
   pickerContainer: {
     flex: 1,
-    borderRadius: 8,
+    borderRadius: 5,
     height: 40,
     borderColor: '#9c9c9c',
     color: '#000',
@@ -229,14 +231,15 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     alignItems: 'center',
     height: 40,
-    width: 110,
-    backgroundColor: '#797D7F',
-    borderColor: '#000',
+    width: 300,
+    backgroundColor: 'transparent',
+    borderColor: '#dadada',
     borderWidth:2,
     borderRadius: 5,
+    marginTop:5
   },
   textoBoton: {
-    color: '#000',
+    color: '#dadada',
     fontSize: 16,
     fontWeight: 'bold',
   },
@@ -247,7 +250,7 @@ const styles = StyleSheet.create({
     width:300,
     borderColor: '#000',
     backgroundColor: 'transparent',
-    borderRadius: 10,
+    borderRadius: 5,
     borderWidth: 2,
     marginBottom: 10,
     paddingHorizontal: 10,
@@ -286,7 +289,7 @@ const pickerSelectStyles = StyleSheet.create({
     paddingHorizontal: 10,
     borderWidth: 2,
     borderColor: '#000',
-    borderRadius: 10, // Redondea las esquinas del select
+    borderRadius: 5, // Redondea las esquinas del select
     color: '#000',
     backgroundColor: 'transparent',
     marginBottom: 5,

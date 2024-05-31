@@ -140,7 +140,7 @@ const Login = () => {
         </View>
         <View>
           <TouchableOpacity>
-            <Text >¿Olvidaste tu contraseña?</Text>
+            <Text style={styles.textoBoton}>¿Olvidaste tu contraseña?</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
     height:40
   },
   textoBoton: {
-    color: '#fff',
+    color: '#000',
     fontSize: 20,
     marginTop: -5,
     textAlign: 'center',
@@ -216,12 +216,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 10,
     paddingHorizontal: 10,
-    color: '#000',
   },
   passwordInput: {
     flex: 1,
     fontSize: 16,
     paddingVertical: 10,
+    color: '#000',
+
   },
   eyeIconContainer: {
     padding: 10,

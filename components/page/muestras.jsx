@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TextInput, StyleSheet, ScrollView, TouchableOpacity, Alert, Image } from 'react-native';
 import axios from 'axios';
 import RNPickerSelect from 'react-native-picker-select';
 import { IP } from './IP';
 import HeaderPrincipal from '../Modales/HeaderPrincipal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ModalMuestra from '../Modales/ModalMuestras';
+import { sharedStyles } from '../../public/Colores';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 const Muestras = () => {
@@ -18,7 +20,23 @@ const Muestras = () => {
     const [tituloModal, setTituloModal] = useState('');
     const [userData, setUserData] = useState(null);
     const [userId, setUserId] = useState(null);
+    const [isDarkMode ,setIsDarkMode] =useState(false)
 
+    const mode = async()=>{
+      try {
+        const storedMode = await AsyncStorage.getItem('isDarkMode')
+        if (storedMode !== null) {
+          setIsDarkMode(JSON.parse(storedMode))
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+    useFocusEffect(
+      React.useCallback(() => {
+        mode();
+      }, [])
+    );
     const ip = IP;
   
     const vista = (accion, userData, userId) => {
@@ -95,8 +113,7 @@ const Muestras = () => {
   
           if (response.status === 200) {
               const mensaje = response.data.message;
-              const nuevoEstado = mensaje.split("'")[1]; 
-              Alert.alert(`Se cambió el estado de la muestra a '${nuevoEstado}' con éxito`);
+              Alert.alert(mensaje);
               fetchData();
           } else {
               console.error('Error:', response.status);
@@ -107,25 +124,42 @@ const Muestras = () => {
           Alert.alert('Error al desactivar la muestra');
       }
   };
+  const handleActivar = async (userId) => {
+    try {
+        const token = await AsyncStorage.getItem('token');
+        const baseURL = `http://${ip}:3000/muestras/activarMuestra/${userId}`;
+        const response = await axios.put(baseURL, null, { headers: { token: token } });
+
+        if (response.status === 200) {
+            const mensaje = response.data.message;
+            Alert.alert(mensaje);
+            fetchData();
+        } else {
+            console.error('Error:', response.status);
+            Alert.alert('Error al activar la muestra');
+        }
+    } catch (error) {
+        console.error(error);
+        Alert.alert('Error al activar la muestra');
+    }
+};
   
   
   
     return (
       <>
         <HeaderPrincipal title='Muestras' />
-        <View style={styles.container}>
-          <View style={styles.inputContainer}>
-            <View style={styles.selectContainer}>
+        <View style={[sharedStyles.container, !isDarkMode ? sharedStyles.conteinerNoche : sharedStyles.conteinerDia]}>
+          <View style={sharedStyles.inputContainer}>
+            <View style={sharedStyles.selectContainer}>
               <TextInput
-                style={styles.input}
+                style={sharedStyles.input}
                 placeholderTextColor="#999"
                 placeholder="Buscar muestra"
                 onChangeText={setSearchTerm}
                 value={searchTerm}
               />
-              <View style={styles.pickerContainer}>
-              </View>
-              <View style={styles.pickerContainer}>
+              <View style={sharedStyles.pickerContainer1}>
                 <RNPickerSelect
                   onValueChange={(value) => setSelectedStatus(value)}
                   placeholder={{ label: "Estado", value: null }}
@@ -139,74 +173,74 @@ const Muestras = () => {
               </View>
             </View>
           </View>
-          <ScrollView style={styles.scrollView}>
+          <ScrollView style={sharedStyles.scrollView}>
             {filteredData.map((muestra) => (
-              <View key={muestra.codigo} style={styles.userContainer}>
-                <View style={styles.itemContainer}>
-                  <Text style={styles.key}>Código muestra:</Text>          
-                  <Text style={[styles.value, { color: '#000' }]}>{muestra.codigo}</Text>
+              <View key={muestra.codigo} style={[sharedStyles.userContainer, !isDarkMode ? sharedStyles.conteinerDia : sharedStyles.conteinerNoche]}>
+                <View style={sharedStyles.itemContainer}>
+                  <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>Código muestra:</Text>          
+                  <Text style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>{muestra.codigo}</Text>
                 </View>
-                <View style={styles.itemContainer}>
-                  <Text style={styles.key}>fecha:</Text>
-                  <Text style={[styles.value, { color: '#000' }]}>{muestra.fecha}</Text>
+                <View style={sharedStyles.itemContainer}>
+                  <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>fecha:</Text>
+                  <Text style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>{muestra.fecha}</Text>
                 </View>
-                <View style={styles.itemContainer}>
-                  <Text style={styles.key}>cantidad</Text>
-                  <Text  style={[styles.value, { color: '#000' }]}>{muestra.cantidad}</Text>
+                <View style={sharedStyles.itemContainer}>
+                  <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>cantidad</Text>
+                  <Text  style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>{muestra.cantidad}</Text>
                 </View>
-                <View style={styles.itemContainer}>
-                  <Text style={styles.key}>Quien recibe:</Text>
-                  <Text style={[styles.value, { color: '#000' }]}>{muestra.quien_recibe}</Text>
+                <View style={sharedStyles.itemContainer}>
+                  <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>Quien recibe:</Text>
+                  <Text style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>{muestra.quien_recibe}</Text>
                 </View>
-                <View style={styles.itemContainer}>
-                  <Text style={styles.key}>Proceso de fermentación</Text>
-                  <Text style={[styles.value, { color: '#000' }]}>{muestra.proceso_fermentacion}</Text>
+                <View style={sharedStyles.itemContainer}>
+                  <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>Proceso de fermentación</Text>
+                  <Text style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>{muestra.proceso_fermentacion}</Text>
                 </View>
-                <View style={styles.itemContainer}>
-                  <Text style={styles.key}>humedad del cafe </Text>
-                  <Text style={[styles.value, { color: '#000' }]}>{muestra.humedad_cafe}</Text>
+                <View style={sharedStyles.itemContainer}>
+                  <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>humedad del cafe </Text>
+                  <Text style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>{muestra.humedad_cafe}</Text>
                 </View>
-                <View style={styles.itemContainer}>
-                  <Text style={styles.key}>Altura en MSNM</Text>
-                  <Text style={[styles.value, { color: '#000' }]}>{muestra.altura_MSNM}</Text>
+                <View style={sharedStyles.itemContainer}>
+                  <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>Altura en MSNM</Text>
+                  <Text style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>{muestra.altura_MSNM}</Text>
                 </View>
-                <View style={styles.itemContainer}>
-                  <Text style={styles.key}>Tipo de secado</Text>
-                  <Text style={[styles.value, { color: '#000' }]}>{muestra.tipo_secado}</Text>
+                <View style={sharedStyles.itemContainer}>
+                  <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>Tipo de secado</Text>
+                  <Text style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>{muestra.tipo_secado}</Text>
                 </View>
-                <View style={styles.itemContainer}>
-                  <Text style={styles.key}>Observaciones</Text>
-                  <Text style={[styles.value, { color: '#000' }]}>{muestra.observaciones}</Text>
+                <View style={sharedStyles.itemContainer}>
+                  <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>Observaciones</Text>
+                  <Text style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>{muestra.observaciones}</Text>
                 </View>
-                <View style={styles.itemContainer}>
-                  <Text style={styles.key}>Numero de lote</Text>
-                  <Text style={[styles.value, { color: '#000' }]}>{muestra.fk_lote}</Text>
+                <View style={sharedStyles.itemContainer}>
+                  <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>Numero de lote</Text>
+                  <Text style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>{muestra.fk_lote}</Text>
                 </View>
 
-                <View style={styles.itemContainer}>
-                  <Text style={styles.key}>Estado:</Text>
-                  <Text style={[styles.value, muestra.estado === 'activo' ? styles.active : styles.inactive]}>
+                <View style={sharedStyles.itemContainer}>
+                  <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>Estado:</Text>
+                  <Text style={[sharedStyles.value, muestra.estado === 'activo' ? sharedStyles.active : sharedStyles.inactive]}>
                     {muestra.estado}
                   </Text>
                 </View>
-                <View style={styles.contenedorBtn}>
-                  <View style={styles.itemContainer}>
-                    <TouchableOpacity onPress={() => vista('Actualizar', muestra, muestra.codigo)} style={styles.button}>
-                      <Text style={styles.actualizar}>Actualizar</Text>
+                <View style={sharedStyles.contenedorBtn}>
+                  <View style={sharedStyles.itemContainer}>
+                    <TouchableOpacity onPress={() => vista('Actualizar', muestra, muestra.codigo)} style={sharedStyles.button}>
+                      <Text style={sharedStyles.actualizar}>Actualizar</Text>
                     </TouchableOpacity>
                   </View>
-                  <View style={styles.buttonContainerD}>
-                    <TouchableOpacity onPress={() => handleDesactivar(muestra.codigo)} style={muestra.estado === 'activo' ? styles.buttonD : styles.buttonDa}>
-                      <Text style={styles.actualizar}>{muestra.estado === 'activo' ? 'Desactivar' : 'Activar'}</Text>
+                  <View style={sharedStyles.buttonContainerD}>
+                    <TouchableOpacity onPress={() => muestra.estado === 'activo' ? handleDesactivar(muestra.codigo) : handleActivar(muestra.codigo)} style={muestra.estado === 'activo' ? sharedStyles.buttonD : sharedStyles.buttonDa}>
+                      <Text style={sharedStyles.actualizar}>{muestra.estado === 'activo' ? 'Desactivar' : 'Activar'}</Text>
                     </TouchableOpacity>
                   </View>
                 </View>
               </View>
             ))}
           </ScrollView>
-          <View style={styles.addButton}>
+          <View style={sharedStyles.addButton}>
             <TouchableOpacity onPress={() => vista('Registrar')}>
-              <Text style={styles.addButtonText}>+</Text>
+              <Image style={sharedStyles.addImage} source={require('../../assets/mas.png')} />
             </TouchableOpacity>
           </View>
           <ModalMuestra visible={viewModal} onClose={vista} title={tituloModal} data={fetchData} userData={userData} userId={userId} />
@@ -214,118 +248,7 @@ const Muestras = () => {
       </>
     );
   };
-const styles = StyleSheet.create({
-  active: {
-    color: 'green', 
-  },
-  inactive: {
-    color: 'red', 
-  },
-  scrollView: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-  container: {
-    flex: 1,
-    padding: 10,
-  },
-  userContainer: {
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 10,
-    backgroundColor: '#d4d4d4',
-  },
-  itemContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 5,
-    color: "#000",
-  },
-  buttonContainerD: {
-    alignContent:'flex-end',
-    margin:10,
-  },
-  key: {
-    fontWeight: 'bold',
-    marginRight: 5,
-    color: "#000",
-  },
-  value: {},
-  inputContainer: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    // marginTop: 20,
-    marginBottom: 10,
-    justifyContent: 'space-between',
-    color: "#000",
-  },
-  input: {
-    flex: 1,
-    height: 40,
-    borderColor: '#9c9c9c',
-    borderWidth: 1,
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    marginRight: 10,
-    color: '#000'
-  },
-  selectContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    borderRadius: 20,
-  },
-  pickerContainer: {
-    flex: 1,
-    borderRadius: 8,
-    height: 40,
-    borderColor: '#9c9c9c',
-  },
-  button: {
-    flexDirection: 'row',
-    backgroundColor: '#0083FF',
-    color: "#000",
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  actualizar: {
-    color: "#fff",
-  },
-  contenedorBtn:{
-    flexDirection:'row',
-  },
-  buttonD: {
-    backgroundColor: '#FF3200',
-    // color: "#999",
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  buttonDa: {
-    backgroundColor: '#039B1E',
-    // color: "#999",
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  addButton: {
-    position: 'absolute',
-    bottom: 20,
-    right: 20, 
-    backgroundColor:"#336699", 
-    borderRadius:50, 
-    height:40, 
-    width:40, 
-    justifyContent: 'center', 
-    alignItems: 'center'
-  },
-  addButtonText: {
-    fontSize: 24, 
-    textAlign: 'center', 
-    color: '#ffffff'
-  }
-});
+
 const pickerSelectStyles = StyleSheet.create({
   inputIOS: {
     fontSize: 14,

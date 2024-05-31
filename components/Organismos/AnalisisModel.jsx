@@ -24,7 +24,8 @@ const AnalisisModel = ({ closeModal, title, data, userData, userId }) => {
   useEffect(() => {
     const fetchlotes = async () => {
       try {
-        const response = await axios.get(`http://${IP}:3000/lotes/listar`);
+        const tokenAsyng = await AsyncStorage.getItem('token')
+        const response = await axios.get(`http://${IP}:3000/lotes/listar`,{headers:{token:tokenAsyng}});
         SetLotesOptions(response.data);
       } catch (error) {
         console.error("Error al cargar los lotes " + error);

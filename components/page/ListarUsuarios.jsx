@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {
   View,
   Text,
@@ -18,6 +18,8 @@ import ModalInternet from '../Modales/ModalInternet';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 import PDFGenerator from '../generadorPDF/PDFCreator';
+import { colores, sharedStyles } from '../../public/Colores';
+import { useFocusEffect } from '@react-navigation/native';
 
 const ListarUsuarios = () => {
   const [originalData, setOriginalData] = useState([]);
@@ -30,6 +32,7 @@ const ListarUsuarios = () => {
   const [internetModal, setInternetModal] = useState(false);
   const [userData, setUserData] = useState(null);
   const [userId, setUserId] = useState(null);
+  const [isDarkMode,setIsDarkMode] = useState(false)
 
   const ip = IP;
 
@@ -86,9 +89,26 @@ const ListarUsuarios = () => {
     }
   };
 
+  const mode = async()=>{
+      try {
+        const storedMode = await AsyncStorage.getItem('isDarkMode');
+        if (storedMode !== null) {
+          setIsDarkMode(JSON.parse(storedMode));
+          console.log('Modo ',isDarkMode);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+      
+    }
   useEffect(() => {
     fetchData();
   }, []);
+  useFocusEffect(
+    useCallback(() => {
+      mode();
+    }, [isDarkMode])
+  );
 
   useEffect(() => {
     let filteredUsers = originalData;
@@ -159,17 +179,17 @@ const ListarUsuarios = () => {
   return (
     <>
       <HeaderPrincipal title=" Usuarios" />
-      <View style={styles.container}>
-        <View style={styles.inputContainer}>
-          <View style={styles.selectContainer}>
+      <View style={[sharedStyles.container, !isDarkMode ? sharedStyles.conteinerNoche : sharedStyles.conteinerDia]}>
+        <View style={sharedStyles.inputContainer}>
+          <View style={sharedStyles.selectContainer}>
             <TextInput
-              style={styles.input}
+              style={sharedStyles.input}
               placeholderTextColor="#999"
               placeholder="Buscar usuario"
               onChangeText={setSearchTerm}
               value={searchTerm}
             />
-            <View style={styles.pickerContainer}>
+            <View style={sharedStyles.pickerContainer}>
               <RNPickerSelect
                 onValueChange={value => setSelectedRole(value)}
                 placeholder={{label: 'Rol', value: null}}
@@ -181,7 +201,7 @@ const ListarUsuarios = () => {
                 useNativeAndroidPickerStyle={false}
               />
             </View>
-            <View style={styles.pickerContainer}>
+            <View style={sharedStyles.pickerContainer}>
               <RNPickerSelect
                 onValueChange={value => setSelectedStatus(value)}
                 placeholder={{label: 'Estado', value: null}}
@@ -195,54 +215,54 @@ const ListarUsuarios = () => {
             </View>
           </View>
         </View>
-        <ScrollView style={styles.scrollView}>
+        <ScrollView style={sharedStyles.scrollView}>
           {filteredData.map(user => (
-            <View key={user.id} style={styles.userContainer}>
-              <View style={styles.itemContainer}>
-                <Text style={styles.key}>Identificacion:</Text>
-                <Text style={[styles.value, {color: '#000'}]}>
+            <View key={user.id} style={[sharedStyles.userContainer, !isDarkMode ?sharedStyles.conteinerDia :sharedStyles.conteinerNoche]}>
+              <View style={sharedStyles.itemContainer}>
+                <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>Identificacion:</Text>
+                <Text style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>
                   {user.identificacion}
                 </Text>
               </View>
-              <View style={styles.itemContainer}>
-                <Text style={styles.key}>Nombre:</Text>
-                <Text style={[styles.value, {color: '#000'}]}>
+              <View style={sharedStyles.itemContainer}>
+                <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>Nombre:</Text>
+                <Text style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>
                   {user.nombre}
                 </Text>
               </View>
-              <View style={styles.itemContainer}>
-                <Text style={styles.key}>Teléfono:</Text>
-                <Text style={[styles.value, {color: '#000'}]}>
+              <View style={sharedStyles.itemContainer}>
+                <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>Teléfono:</Text>
+                <Text style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>
                   {user.telefono}
                 </Text>
               </View>
-              <View style={styles.itemContainer}>
-                <Text style={styles.key}>Tipo de usuario:</Text>
-                <Text style={[styles.value, {color: '#000'}]}>
+              <View style={sharedStyles.itemContainer}>
+                <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>Tipo de usuario:</Text>
+                <Text style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>
                   {user.tipo_usuario}
                 </Text>
               </View>
-              <View style={styles.itemContainer}>
-                <Text style={styles.key}>Estado:</Text>
+              <View style={sharedStyles.itemContainer}>
+                <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>Estado:</Text>
                 <Text
                   style={[
-                    styles.value,
-                    user.estado === 'activo' ? styles.active : styles.inactive,
+                    sharedStyles.value,
+                    user.estado === 'activo' ? sharedStyles.active : sharedStyles.inactive,
                   ]}>
                   {user.estado}
                 </Text>
               </View>
-              <View style={styles.contenedorBtn}>
-                <View style={styles.itemContainer}>
+              <View style={sharedStyles.contenedorBtn}>
+                <View style={sharedStyles.itemContainer}>
                   <TouchableOpacity
                     onPress={() =>
                       vista('Actualizar', user, user.identificacion)
                     }
-                    style={styles.button}>
-                    <Text style={styles.actualizar}>Actualizar</Text>
+                    style={sharedStyles.button}>
+                    <Text style={sharedStyles.actualizar}>Actualizar</Text>
                   </TouchableOpacity>
                 </View>
-                <View style={styles.buttonContainerD}>
+                <View style={sharedStyles.buttonContainerD}>
                   <TouchableOpacity
                     onPress={() =>
                       user.estado === 'activo'
@@ -251,15 +271,15 @@ const ListarUsuarios = () => {
                     }
                     style={[
                       user.estado === 'activo'
-                        ? styles.buttonD
-                        : styles.buttonDa,
+                        ? sharedStyles.buttonD
+                        : sharedStyles.buttonDa,
                     ]}>
-                    <Text style={styles.actualizar}>
+                    <Text style={sharedStyles.actualizar}>
                       {user.estado === 'activo' ? 'Desactivar' : 'Activar'}
                     </Text>
                   </TouchableOpacity>
                 </View>
-                <View style={styles.itemContainer}>
+                <View style={sharedStyles.itemContainer}>
                   <PDFGenerator />
                 </View>
               </View>
@@ -267,21 +287,11 @@ const ListarUsuarios = () => {
           ))}
         </ScrollView>
         <View
-          style={{
-            position: 'absolute',
-            bottom: 20,
-            right: 20,
-            backgroundColor: '#336699',
-            borderRadius: 50,
-            height: 40,
-            width: 40,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
+          style={sharedStyles.addButton}>
           <TouchableOpacity onPress={() => vista('Registrar')}>
             <Image
               source={require('../../assets/mas.png')}
-              style={{width: 50, height: 50}}
+              style={sharedStyles.addImage}
             />
           </TouchableOpacity>
         </View>
@@ -301,104 +311,7 @@ const ListarUsuarios = () => {
     </>
   );
 };
-const styles = StyleSheet.create({
-  active: {
-    color: 'green', // Cambia el color para el estado activo según tus preferencias
-  },
-  inactive: {
-    color: 'red', // Cambia el color para el estado inactivo según tus preferencias
-  },
-  scrollView: {
-    flex: 1,
-    backgroundColor: '#fff',
-  },
-  container: {
-    flex: 1,
-    padding: 10,
-  },
-  userContainer: {
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 10,
-    backgroundColor: '#d4d4d4',
-  },
-  itemContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 5,
-    color: '#000',
-  },
-  buttonContainerD: {
-    alignContent: 'flex-end',
-    margin: 10,
-  },
-  key: {
-    fontWeight: 'bold',
-    marginRight: 5,
-    color: '#000',
-  },
-  value: {},
-  inputContainer: {
-    flexDirection: 'column',
-    alignItems: 'center',
-    // marginTop: 20,
-    marginBottom: 10,
-    justifyContent: 'space-between',
-    color: '#000',
-  },
-  input: {
-    flex: 1,
-    height: 40,
-    borderColor: '#9c9c9c',
-    borderWidth: 1,
-    borderRadius: 10,
-    paddingHorizontal: 10,
-    marginRight: 10,
-    color: '#000',
-  },
-  selectContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    // flex: 1,  // por culpa de este flex no me funcionaba los select
-    // maxWidth: 800,
-    justifyContent: 'space-between',
-    borderRadius: 20,
-  },
-  pickerContainer: {
-    flex: 1,
-    borderRadius: 8,
-    height: 40,
-    borderColor: '#9c9c9c',
-  },
-  button: {
-    flexDirection: 'row',
-    backgroundColor: '#0083FF',
-    color: '#000',
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  actualizar: {
-    color: '#fff',
-  },
-  contenedorBtn: {
-    flexDirection: 'row',
-  },
-  buttonD: {
-    backgroundColor: '#FF3200',
-    // color: "#999",
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-  buttonDa: {
-    backgroundColor: '#039B1E',
-    // color: "#999",
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-  },
-});
+
 const pickerSelectStyles = StyleSheet.create({
   inputIOS: {
     fontSize: 14,
