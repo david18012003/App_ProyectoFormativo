@@ -1,4 +1,4 @@
-import { View, Text, Modal, TouchableOpacity, Image } from "react-native";
+import { View, Text, Modal, TouchableOpacity, Image, ScrollView } from "react-native";
 import React from "react";
 import VariableModel from "../Organismos/VariableModel";
 
@@ -34,30 +34,34 @@ const ModalVariables = ({ visible, onClose, title, data, userData, userId }) => 
               flexDirection: "row",
               justifyContent: "flex-end",
               alignItems: "center",
-              // paddingHorizontal:10,
             }}
           >
             <TouchableOpacity onPress={onClose}>
-              <Image style={{
+              <Image
+                style={{
                   width: 30,
                   height: 30,
-                  margin:10
-                }} source={require('../../assets/cerrar.png')}/>
+                  margin: 10,
+                }}
+                source={require('../../assets/cerrar.png')}
+              />
             </TouchableOpacity>
           </View>
-          <View
-            style={{
-              margin: 12,
-            }}
-          >
-            <VariableModel
-              closeModal={onClose}
-              title={title}
-              data={data}
-              userData={userData}
-              userId={userId}
-            />
-          </View>
+          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+            <View
+              style={{
+                margin: 12,
+              }}
+            >
+              <VariableModel
+                closeModal={onClose}
+                title={title}
+                data={data}
+                userData={userData}
+                userId={userId}
+              />
+            </View>
+          </ScrollView>
         </View>
       </View>
     </Modal>
