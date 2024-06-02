@@ -6,10 +6,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { IP } from './IP';
 import NetInfo from '@react-native-community/netinfo'
 
-
-
-// const ip = "192.168.143.19";
-
 const ip =IP
 
 const Login = () => {
@@ -84,20 +80,16 @@ const Login = () => {
           if (userRol=='catador'&&userStatus=='inactivo' || userRol=='caficultor'&&userStatus=='inactivo') {
             Alert.alert("Lo sentimor pero no esta activo en el sistema. ");
           }else{
-            Alert.alert("Susdatos son erroneos ");
+            Alert.alert("Sus datos son erroneos ");
           }
 
         }
-        // navigation.navigate("vista1");
-        // alert('Logueado');
-
-      
     } catch (error) {
       if (error.response && error.response.status === 404) {
         Alert.alert('Usuario no registrado');
       } else {
         console.error(error);
-        Alert.alert('Error del servidor');
+        Alert.alert('Error del servidor ',error);
       }
     }
   }
@@ -115,7 +107,7 @@ const Login = () => {
             style={styles.imagen} // Estilo de la imagen
           />
         
-        <View style={styles.formulario}>
+        <View>
           <Text style={styles.titulo}>INICIAR SESION </Text>
           <TextInput style={styles.input} placeholderTextColor="#000"  value={formData.correo_electronico} onChangeText={(text) => handleInputChange('correo_electronico', text)} placeholder='Correo'/>
           <View style={styles.passwordInputContainer}>
@@ -127,7 +119,7 @@ const Login = () => {
             placeholder="Contraseña"
             secureTextEntry={secureTextEntry}
           />
-          <TouchableOpacity onPress={toggleSecureEntry} style={styles.eyeIconContainer}>
+          <TouchableOpacity onPress={toggleSecureEntry}>
             <Image
               style={styles.eyeIcon}
               source={secureTextEntry ? require('../../assets/cerrar-ojo.png') : require('../../assets/ojo.png')}
@@ -152,14 +144,11 @@ const Login = () => {
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    resizeMode: 'cover',
-    justifyContent: 'center',
   },
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 20,
     
   },
   titulo: {
@@ -169,17 +158,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: '#000',
   },
-  formulario: {
-    width: '100%',
-    borderWidth: 1,
-    borderRadius: 10,
-    borderColor: 'transparent',
-    padding: 20,
-    marginBottom: 20,
-  },
+
   input: {
     height: 40,
-    borderColor: 'transparent',
+    width:300,
     backgroundColor: '#58AAD8',
     borderRadius: 10,
     marginBottom: 10,
@@ -188,21 +170,19 @@ const styles = StyleSheet.create({
   },
   boton: {
     backgroundColor: '#337FA9',
-    paddingVertical: 10,
+    justifyContent: 'center',
     borderRadius: 10,
+    marginBottom: 15,
     marginTop: 10,
     height:40
   },
   textoBoton: {
     color: '#000',
     fontSize: 20,
-    marginTop: -5,
     textAlign: 'center',
     fontWeight: 'bold',
   },
   imagen: {
-    alignItems: 'center',
-    justifyContent: 'center',
     marginBottom: 10,
     height: 230,
     width: 230,
@@ -211,7 +191,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     height: 40,
-    borderColor: 'tranparent',
     backgroundColor: '#58AAD8',
     borderRadius: 10,
     marginBottom: 10,
@@ -220,13 +199,10 @@ const styles = StyleSheet.create({
   passwordInput: {
     flex: 1,
     fontSize: 16,
-    paddingVertical: 10,
     color: '#000',
 
   },
-  eyeIconContainer: {
-    padding: 10,
-  },
+  
   eyeIcon: {
     width: 24,
     height: 24,

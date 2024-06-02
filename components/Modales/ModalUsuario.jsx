@@ -27,7 +27,7 @@ const ModalUsuario = ({visible, onClose, title, data, userData, userId}) => {
                 <LinearGradient
                     colors={colors.tealGradient}
                     style={{
-                        height:650,
+                        height:680,
                         width:350,
                         borderRadius:5
                     }}
