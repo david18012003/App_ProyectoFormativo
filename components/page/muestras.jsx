@@ -61,24 +61,27 @@ const Muestras = () => {
           codigo: index + 1,
           codigo: muestra.codigo,
           fecha: formatDate(muestra.fecha), 
-          cantidad: muestra.cantidad,
-          quien_recibe: muestra.quien_recibe,
+          tipo_molienda: muestra.tipo_molienda,
+          densidad_cafe: muestra.densidad_cafe,
           proceso_fermentacion: muestra.proceso_fermentacion,
-          humedad_cafe: muestra.humedad_cafe,
+          tipo_tostion: muestra.tipo_tostion,
           altura_MSNM: muestra.altura_MSNM,
-          tipo_secado: muestra.tipo_secado,
-          observaciones: muestra.observaciones,
+          tiempo_fermentacion: muestra.tiempo_fermentacion,
+          actividad_agua: muestra.actividad_agua,
+          tiempo_secado: muestra.tiempo_secado,
+          presentacion: muestra.presentacion,
           fk_lote: muestra.fk_lote,
           estado: muestra.estado,
         }));
         
         setOriginalData(dataWithIds);
         setFilteredData(dataWithIds);
-
+    
       } catch (error) {
         console.error('Error al obtener datos:', error.message);
       }
     };
+    
       // Función para formatear la fecha
       const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -185,32 +188,40 @@ const Muestras = () => {
                   <Text style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>{muestra.fecha}</Text>
                 </View>
                 <View style={sharedStyles.itemContainer}>
-                  <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>cantidad</Text>
-                  <Text  style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>{muestra.cantidad}</Text>
+                  <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>tipo_molienda</Text>
+                  <Text  style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>{muestra.tipo_molienda}</Text>
                 </View>
                 <View style={sharedStyles.itemContainer}>
-                  <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>Quien recibe:</Text>
-                  <Text style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>{muestra.quien_recibe}</Text>
+                  <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>Densidad del cafe:</Text>
+                  <Text style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>{muestra.densidad_cafe}</Text>
                 </View>
                 <View style={sharedStyles.itemContainer}>
                   <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>Proceso de fermentación</Text>
                   <Text style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>{muestra.proceso_fermentacion}</Text>
                 </View>
                 <View style={sharedStyles.itemContainer}>
-                  <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>humedad del cafe </Text>
-                  <Text style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>{muestra.humedad_cafe}</Text>
+                  <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>Tipo de tostión: </Text>
+                  <Text style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>{muestra.tipo_tostion}</Text>
                 </View>
                 <View style={sharedStyles.itemContainer}>
                   <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>Altura en MSNM</Text>
                   <Text style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>{muestra.altura_MSNM}</Text>
                 </View>
                 <View style={sharedStyles.itemContainer}>
-                  <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>Tipo de secado</Text>
-                  <Text style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>{muestra.tipo_secado}</Text>
+                  <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>Tiempo de fermentación:</Text>
+                  <Text style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>{muestra.tiempo_fermentacion}</Text>
                 </View>
                 <View style={sharedStyles.itemContainer}>
-                  <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>Observaciones</Text>
-                  <Text style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>{muestra.observaciones}</Text>
+                  <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>Actividad del agua:</Text>
+                  <Text style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>{muestra.actividad_agua}</Text>
+                </View>
+                <View style={sharedStyles.itemContainer}>
+                  <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>Tiempo de secado:</Text>
+                  <Text style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>{muestra.tiempo_secado}</Text>
+                </View>
+                <View style={sharedStyles.itemContainer}>
+                  <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>Presentación:</Text>
+                  <Text style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>{muestra.presentacion}</Text>
                 </View>
                 <View style={sharedStyles.itemContainer}>
                   <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>Numero de lote</Text>

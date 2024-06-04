@@ -11,7 +11,7 @@ import axios from "axios";
 import { IP } from "../page/IP";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import RNPickerSelect from "react-native-picker-select";
-import DatePicker from "@react-native-community/datetimepicker";
+import DateTimePicker from "@react-native-community/datetimepicker"
 
 const MuestraModel = ({ closeModal, title, data, userData, userId }) => {
   const [formData, setFormData] = useState({
@@ -29,18 +29,25 @@ const MuestraModel = ({ closeModal, title, data, userData, userId }) => {
   });
 
   const [lotesOptions, SetLotesOptions] = useState([]);
+  const [date, setDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
+  
   useEffect(() => {
     const fetchLotes = async () => {
-      try {
-        const response = await axios.get(`http://${IP}:3000/lotes/listar`);
-        SetLotesOptions(response.data);
-      } catch (error) {
-        console.error("Error al cargar los lotes " + error);
-      }
+        try {
+            const token = await AsyncStorage.getItem("token");
+            const response = await axios.get(`http://${IP}:3000/lotes/listar`, {
+                headers: { token: token }
+            });
+            SetLotesOptions(response.data);
+        } catch (error) {
+            console.error("Error al cargar los lotes " + error);
+        }
     };
     fetchLotes();
-  }, []);
+}, []);
+
 
   useEffect(() => {
     if (title === "Actualizar" && userData) {
@@ -64,23 +71,11 @@ const MuestraModel = ({ closeModal, title, data, userData, userId }) => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const showDatePicker = async () => {
-    try {
-      const selectedDate = new Date(formData.fecha);
-      DatePicker.showDatePicker(
-        {
-          date: selectedDate,
-          mode: "date",
-        },
-        (event, date) => {
-          if (event !== "dismissed") {
-            setFormData({ ...formData, fecha: date.toISOString().split('T')[0] });
-          }
-        }
-      );
-    } catch (error) {
-      console.error("Cannot open date picker", error);
-    }
+  const handleDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShowDatePicker(false);
+    setDate(currentDate);
+    setFormData({ ...formData, fecha: currentDate.toISOString().split('T')[0] });
   };
 
   const handleSubmit = async () => {
@@ -126,9 +121,17 @@ const MuestraModel = ({ closeModal, title, data, userData, userId }) => {
 
       <View style={styles.formulario}>
         <Text style={styles.etiqueta}>Fecha:</Text>
-        <TouchableOpacity onPress={showDatePicker}>
-          <Text style={styles.input}>{formData.fecha.toString()}</Text>
+        <TouchableOpacity onPress={() => setShowDatePicker(true)}>
+          <Text style={styles.input}>{formData.fecha}</Text>
         </TouchableOpacity>
+        {showDatePicker && (
+          <DateTimePicker
+          value = {date}
+          mode = "date"
+          display = "default"
+          onChange = {handleDateChange}
+          />
+        )}
 
         <Text style={styles.etiqueta}>Tipo de Molienda:</Text>
         <TextInput
@@ -144,7 +147,6 @@ const MuestraModel = ({ closeModal, title, data, userData, userId }) => {
           style={styles.input}
           placeholderTextColor="#999"
           value={formData.densidad_cafe}
-          keyboardType="numeric"
           onChangeText={(text) => handleInputChange("densidad_cafe", text)}
           placeholder="Ingrese la densidad del café"
         />
@@ -184,7 +186,7 @@ const MuestraModel = ({ closeModal, title, data, userData, userId }) => {
           style={styles.input}
           placeholderTextColor="#999"
           value={formData.tiempo_fermentacion}
-          keyboardType="numeric"
+
           onChangeText={(text) => handleInputChange("tiempo_fermentacion", text)}
           placeholder="Ingrese el tiempo de fermentación"
         />
@@ -194,7 +196,6 @@ const MuestraModel = ({ closeModal, title, data, userData, userId }) => {
           style={styles.input}
           placeholderTextColor="#999"
           value={formData.actividad_agua}
-          keyboardType="numeric"
           onChangeText={(text) => handleInputChange("actividad_agua", text)}
           placeholder="Ingrese la actividad del agua"
         />
@@ -204,7 +205,6 @@ const MuestraModel = ({ closeModal, title, data, userData, userId }) => {
           style={styles.input}
           placeholderTextColor="#999"
           value={formData.tiempo_secado}
-          keyboardType="numeric"
           onChangeText={(text) => handleInputChange("tiempo_secado", text)}
           placeholder="Ingrese el tiempo de secado"
         />
