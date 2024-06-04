@@ -18,8 +18,8 @@ import ModalInternet from '../Modales/ModalInternet';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 import PDFGenerator from '../generadorPDF/PDFCreator';
-import { colores, sharedStyles } from '../../public/Colores';
-import { useFocusEffect } from '@react-navigation/native';
+import {colores, sharedStyles} from '../../public/Colores';
+import {useFocusEffect} from '@react-navigation/native';
 
 const ListarUsuarios = () => {
   const [originalData, setOriginalData] = useState([]);
@@ -32,7 +32,7 @@ const ListarUsuarios = () => {
   const [internetModal, setInternetModal] = useState(false);
   const [userData, setUserData] = useState(null);
   const [userId, setUserId] = useState(null);
-  const [isDarkMode,setIsDarkMode] = useState(false)
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   const ip = IP;
 
@@ -89,25 +89,24 @@ const ListarUsuarios = () => {
     }
   };
 
-  const mode = async()=>{
-      try {
-        const storedMode = await AsyncStorage.getItem('isDarkMode');
-        if (storedMode !== null) {
-          setIsDarkMode(JSON.parse(storedMode));
-          console.log('Modo ',isDarkMode);
-        }
-      } catch (error) {
-        console.log(error);
+  const mode = async () => {
+    try {
+      const storedMode = await AsyncStorage.getItem('isDarkMode');
+      if (storedMode !== null) {
+        setIsDarkMode(JSON.parse(storedMode));
+        console.log('Modo ', isDarkMode);
       }
-      
+    } catch (error) {
+      console.log(error);
     }
+  };
   useEffect(() => {
     fetchData();
   }, []);
   useFocusEffect(
     useCallback(() => {
       mode();
-    }, [isDarkMode])
+    }, [isDarkMode]),
   );
 
   useEffect(() => {
@@ -179,7 +178,11 @@ const ListarUsuarios = () => {
   return (
     <>
       <HeaderPrincipal title=" Usuarios" />
-      <View style={[sharedStyles.container, !isDarkMode ? sharedStyles.conteinerNoche : sharedStyles.conteinerDia]}>
+      <View
+        style={[
+          sharedStyles.container,
+          !isDarkMode ? sharedStyles.conteinerNoche : sharedStyles.conteinerDia,
+        ]}>
         <View style={sharedStyles.inputContainer}>
           <View style={sharedStyles.selectContainer}>
             <TextInput
@@ -217,37 +220,92 @@ const ListarUsuarios = () => {
         </View>
         <ScrollView style={sharedStyles.scrollView}>
           {filteredData.map(user => (
-            <View key={user.id} style={[sharedStyles.userContainer, !isDarkMode ?sharedStyles.conteinerDia :sharedStyles.conteinerNoche]}>
+            <View
+              key={user.id}
+              style={[
+                sharedStyles.userContainer,
+                !isDarkMode
+                  ? sharedStyles.conteinerDia
+                  : sharedStyles.conteinerNoche,
+              ]}>
               <View style={sharedStyles.itemContainer}>
-                <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>Identificacion:</Text>
-                <Text style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>
+                <Text
+                  style={[
+                    sharedStyles.key,
+                    !isDarkMode ? sharedStyles.dia : sharedStyles.noche,
+                  ]}>
+                  Identificacion:
+                </Text>
+                <Text
+                  style={[
+                    sharedStyles.value,
+                    !isDarkMode ? sharedStyles.dia : sharedStyles.noche,
+                  ]}>
                   {user.identificacion}
                 </Text>
               </View>
               <View style={sharedStyles.itemContainer}>
-                <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>Nombre:</Text>
-                <Text style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>
+                <Text
+                  style={[
+                    sharedStyles.key,
+                    !isDarkMode ? sharedStyles.dia : sharedStyles.noche,
+                  ]}>
+                  Nombre:
+                </Text>
+                <Text
+                  style={[
+                    sharedStyles.value,
+                    !isDarkMode ? sharedStyles.dia : sharedStyles.noche,
+                  ]}>
                   {user.nombre}
                 </Text>
               </View>
               <View style={sharedStyles.itemContainer}>
-                <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>Teléfono:</Text>
-                <Text style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>
+                <Text
+                  style={[
+                    sharedStyles.key,
+                    !isDarkMode ? sharedStyles.dia : sharedStyles.noche,
+                  ]}>
+                  Teléfono:
+                </Text>
+                <Text
+                  style={[
+                    sharedStyles.value,
+                    !isDarkMode ? sharedStyles.dia : sharedStyles.noche,
+                  ]}>
                   {user.telefono}
                 </Text>
               </View>
               <View style={sharedStyles.itemContainer}>
-                <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>Tipo de usuario:</Text>
-                <Text style={[sharedStyles.value, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>
+                <Text
+                  style={[
+                    sharedStyles.key,
+                    !isDarkMode ? sharedStyles.dia : sharedStyles.noche,
+                  ]}>
+                  Tipo de usuario:
+                </Text>
+                <Text
+                  style={[
+                    sharedStyles.value,
+                    !isDarkMode ? sharedStyles.dia : sharedStyles.noche,
+                  ]}>
                   {user.tipo_usuario}
                 </Text>
               </View>
               <View style={sharedStyles.itemContainer}>
-                <Text style={[sharedStyles.key, !isDarkMode ? sharedStyles.dia : sharedStyles.noche]}>Estado:</Text>
+                <Text
+                  style={[
+                    sharedStyles.key,
+                    !isDarkMode ? sharedStyles.dia : sharedStyles.noche,
+                  ]}>
+                  Estado:
+                </Text>
                 <Text
                   style={[
                     sharedStyles.value,
-                    user.estado === 'activo' ? sharedStyles.active : sharedStyles.inactive,
+                    user.estado === 'activo'
+                      ? sharedStyles.active
+                      : sharedStyles.inactive,
                   ]}>
                   {user.estado}
                 </Text>
@@ -286,8 +344,7 @@ const ListarUsuarios = () => {
             </View>
           ))}
         </ScrollView>
-        <View
-          style={sharedStyles.addButton}>
+        <View style={sharedStyles.addButton}>
           <TouchableOpacity onPress={() => vista('Registrar')}>
             <Image
               source={require('../../assets/mas.png')}

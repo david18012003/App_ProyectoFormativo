@@ -16,20 +16,22 @@ import DatePicker from "@react-native-community/datetimepicker";
 const MuestraModel = ({ closeModal, title, data, userData, userId }) => {
   const [formData, setFormData] = useState({
     fecha: userData ? userData.fecha : "",
-    cantidad: userData ? userData.cantidad : "",
-    quien_recibe: userData ? userData.quien_recibe : "",
+    tipo_molienda: userData ? userData.tipo_molienda : "",
+    densidad_cafe: userData ? userData.densidad_cafe : "",
     proceso_fermentacion: userData ? userData.proceso_fermentacion : "",
-    humedad_cafe: userData ? userData.humedad_cafe : "",
+    tipo_tostion: userData ? userData.tipo_tostion : "",
     altura_MSNM: userData ? userData.altura_MSNM : "",
-    tipo_secado: userData ? userData.tipo_secado : "",
-    observaciones: userData ? userData.observaciones : "",
+    tiempo_fermentacion: userData ? userData.tiempo_fermentacion : "",
+    actividad_agua: userData ? userData.actividad_agua : "",
+    tiempo_secado: userData ? userData.tiempo_secado : "",
+    presentacion: userData ? userData.presentacion : "",
     fk_lote: userData ? userData.fk_lote : "",
   });
 
   const [lotesOptions, SetLotesOptions] = useState([]);
 
   useEffect(() => {
-    const fetchlotes = async () => {
+    const fetchLotes = async () => {
       try {
         const response = await axios.get(`http://${IP}:3000/lotes/listar`);
         SetLotesOptions(response.data);
@@ -37,24 +39,26 @@ const MuestraModel = ({ closeModal, title, data, userData, userId }) => {
         console.error("Error al cargar los lotes " + error);
       }
     };
-    fetchlotes();
+    fetchLotes();
   }, []);
 
   useEffect(() => {
     if (title === "Actualizar" && userData) {
       setFormData({
         fecha: userData.fecha,
-        cantidad: userData.cantidad,
-        quien_recibe: userData.quien_recibe,
+        tipo_molienda: userData.tipo_molienda,
+        densidad_cafe: userData.densidad_cafe,
         proceso_fermentacion: userData.proceso_fermentacion,
-        humedad_cafe: userData.humedad_cafe,
+        tipo_tostion: userData.tipo_tostion,
         altura_MSNM: userData.altura_MSNM,
-        tipo_secado: userData.tipo_secado,
-        observaciones: userData.observaciones,
+        tiempo_fermentacion: userData.tiempo_fermentacion,
+        actividad_agua: userData.actividad_agua,
+        tiempo_secado: userData.tiempo_secado,
+        presentacion: userData.presentacion,
         fk_lote: userData.fk_lote,
       });
     }
-  }, []);
+  }, [title, userData]);
 
   const handleInputChange = (name, value) => {
     setFormData({ ...formData, [name]: value });
@@ -70,7 +74,7 @@ const MuestraModel = ({ closeModal, title, data, userData, userId }) => {
         },
         (event, date) => {
           if (event !== "dismissed") {
-            setFormData({ ...formData, fecha: date });
+            setFormData({ ...formData, fecha: date.toISOString().split('T')[0] });
           }
         }
       );
@@ -94,6 +98,7 @@ const MuestraModel = ({ closeModal, title, data, userData, userId }) => {
       );
     }
   };
+
   const handleActualizar = async () => {
     try {
       const token = await AsyncStorage.getItem("token");
@@ -120,29 +125,31 @@ const MuestraModel = ({ closeModal, title, data, userData, userId }) => {
       <Text style={styles.titulo}>{title}</Text>
 
       <View style={styles.formulario}>
-        <Text style={styles.etiqueta}>fecha:</Text>
+        <Text style={styles.etiqueta}>Fecha:</Text>
         <TouchableOpacity onPress={showDatePicker}>
           <Text style={styles.input}>{formData.fecha.toString()}</Text>
         </TouchableOpacity>
 
-        <Text style={styles.etiqueta}>Cantidad:</Text>
+        <Text style={styles.etiqueta}>Tipo de Molienda:</Text>
         <TextInput
           style={styles.input}
           placeholderTextColor="#999"
-          value={formData.cantidad}
-          onChangeText={(text) => handleInputChange("cantidad", text)}
+          value={formData.tipo_molienda}
+          onChangeText={(text) => handleInputChange("tipo_molienda", text)}
+          placeholder="Ingrese el tipo de molienda"
+        />
+
+        <Text style={styles.etiqueta}>Densidad del Café:</Text>
+        <TextInput
+          style={styles.input}
+          placeholderTextColor="#999"
+          value={formData.densidad_cafe}
           keyboardType="numeric"
-          placeholder="Ingrese la cantidad"
+          onChangeText={(text) => handleInputChange("densidad_cafe", text)}
+          placeholder="Ingrese la densidad del café"
         />
-        <Text style={styles.etiqueta}>Quien recibe:</Text>
-        <TextInput
-          style={styles.input}
-          placeholderTextColor="#999"
-          value={formData.quien_recibe}
-          onChangeText={(text) => handleInputChange("quien_recibe", text)}
-          placeholder="Ingrese quien recibe"
-        />
-        <Text style={styles.etiqueta}>proceso de fermentación:</Text>
+
+        <Text style={styles.etiqueta}>Proceso de Fermentación:</Text>
         <TextInput
           style={styles.input}
           placeholderTextColor="#999"
@@ -150,44 +157,68 @@ const MuestraModel = ({ closeModal, title, data, userData, userId }) => {
           onChangeText={(text) =>
             handleInputChange("proceso_fermentacion", text)
           }
-          placeholder="Ingresa el proceso de fermentación"
+          placeholder="Ingrese el proceso de fermentación"
         />
-        <Text style={styles.etiqueta}>Humedad del cafe:</Text>
+
+        <Text style={styles.etiqueta}>Tipo de Tostión:</Text>
         <TextInput
           style={styles.input}
           placeholderTextColor="#999"
-          value={formData.humedad_cafe}
-          keyboardType="numeric"
-          onChangeText={(text) => handleInputChange("humedad_cafe", text)}
-          placeholder="Ingresavla humedad del cafe"
+          value={formData.tipo_tostion}
+          onChangeText={(text) => handleInputChange("tipo_tostion", text)}
+          placeholder="Ingrese el tipo de tostión"
         />
-        <Text style={styles.etiqueta}>Altura:</Text>
+
+        <Text style={styles.etiqueta}>Altura MSNM:</Text>
         <TextInput
           style={styles.input}
           placeholderTextColor="#999"
           value={formData.altura_MSNM}
           keyboardType="numeric"
           onChangeText={(text) => handleInputChange("altura_MSNM", text)}
-          placeholder="Ingresa la altura MSNM"
-        />
-        <Text style={styles.etiqueta}>tipo de secado</Text>
-        <TextInput
-          style={styles.input}
-          placeholderTextColor="#999"
-          value={formData.tipo_secado}
-          onChangeText={(text) => handleInputChange("tipo_secado", text)}
-          placeholder="Ingresa el tipo de secado"
-        />
-        <Text style={styles.etiqueta}>Observaciones:</Text>
-        <TextInput
-          style={styles.input}
-          placeholderTextColor="#999"
-          value={formData.observaciones}
-          onChangeText={(text) => handleInputChange("observaciones", text)}
-          placeholder="Ingresa las observaciones"
+          placeholder="Ingrese la altura MSNM"
         />
 
-        <Text style={styles.etiqueta}>Numero de lote</Text>
+        <Text style={styles.etiqueta}>Tiempo de Fermentación:</Text>
+        <TextInput
+          style={styles.input}
+          placeholderTextColor="#999"
+          value={formData.tiempo_fermentacion}
+          keyboardType="numeric"
+          onChangeText={(text) => handleInputChange("tiempo_fermentacion", text)}
+          placeholder="Ingrese el tiempo de fermentación"
+        />
+
+        <Text style={styles.etiqueta}>Actividad del Agua:</Text>
+        <TextInput
+          style={styles.input}
+          placeholderTextColor="#999"
+          value={formData.actividad_agua}
+          keyboardType="numeric"
+          onChangeText={(text) => handleInputChange("actividad_agua", text)}
+          placeholder="Ingrese la actividad del agua"
+        />
+
+        <Text style={styles.etiqueta}>Tiempo de Secado:</Text>
+        <TextInput
+          style={styles.input}
+          placeholderTextColor="#999"
+          value={formData.tiempo_secado}
+          keyboardType="numeric"
+          onChangeText={(text) => handleInputChange("tiempo_secado", text)}
+          placeholder="Ingrese el tiempo de secado"
+        />
+
+        <Text style={styles.etiqueta}>Presentación:</Text>
+        <TextInput
+          style={styles.input}
+          placeholderTextColor="#999"
+          value={formData.presentacion}
+          onChangeText={(text) => handleInputChange("presentacion", text)}
+          placeholder="Ingrese la presentación"
+        />
+
+        <Text style={styles.etiqueta}>Número de Lote:</Text>
         <RNPickerSelect
           style={styles.input}
           keyboardType="numeric"
@@ -214,27 +245,10 @@ const MuestraModel = ({ closeModal, title, data, userData, userId }) => {
 };
 
 const styles = StyleSheet.create({
-  modalContainer: {
+  container: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  innerContainer: {
-    width: "80%",
     backgroundColor: "#fff",
-    borderRadius: 10,
     padding: 20,
-  },
-  closeButton: {
-    position: "absolute",
-    top: 10,
-    right: 10,
-    padding: 5,
-  },
-  closeButtonText: {
-    fontSize: 20,
-    color: "#000",
   },
   titulo: {
     fontSize: 24,
@@ -260,22 +274,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     color: "#000",
   },
-  pickerContainer: {
-    flex: 1,
-    borderRadius: 8,
-    height: 40,
-    borderColor: "#9c9c9c",
-    color: "#000",
-  },
   boton: {
     justifyContent: "center",
-    alignContent: "center",
     alignItems: "center",
     height: 40,
     width: 110,
     backgroundColor: "#336699",
     borderRadius: 5,
-    marginStart: 110,
+    alignSelf: "center",
   },
   textoBoton: {
     color: "#fff",

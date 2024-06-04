@@ -5,7 +5,7 @@ import HeaderPrincipal from '../Modales/HeaderPrincipal';
 import { IP } from './IP';
 import axios from 'axios';
 
-const Perfil = () => {
+const PerfilUsuario = () => {
   const [formData, setFormData] = useState({
     identificacion: '',
     nombre: '',
@@ -206,4 +206,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default Perfil;
+export default PerfilUsuario;
