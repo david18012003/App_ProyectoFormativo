@@ -59,7 +59,7 @@ const ListarUsuarios = () => {
 
   const fetchData = async () => {
     try {
-      const baseURL = `http://${ip}:3000/usuarios/listar`;
+      const baseURL = `${ip}/usuarios/listar`;
       const tokenAsyng = await AsyncStorage.getItem('token');
       console.log('el token de listar:' + tokenAsyng);
       const response = await axios.get(baseURL, {headers: {token: tokenAsyng}});
@@ -138,7 +138,7 @@ const ListarUsuarios = () => {
     try {
       console.log(userId);
       const token = await AsyncStorage.getItem('token');
-      const baseURL = `http://${ip}:3000/usuarios/desactivar/${userId}`;
+      const baseURL = `${ip}/usuarios/desactivar/${userId}`;
       const response = await axios.put(baseURL, null, {
         headers: {token: token},
       });
@@ -158,7 +158,7 @@ const ListarUsuarios = () => {
     try {
       console.log(userId);
       const token = await AsyncStorage.getItem('token');
-      const baseURL = `http://${ip}:3000/usuarios/activar/${userId}`;
+      const baseURL = `${ip}/usuarios/activar/${userId}`;
       const response = await axios.put(baseURL, null, {
         headers: {token: token},
       });

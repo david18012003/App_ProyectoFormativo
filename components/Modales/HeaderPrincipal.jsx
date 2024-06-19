@@ -88,13 +88,13 @@ const HeaderPrincipal = ({ title }) => {
                             </TouchableOpacity>
                         )}
                     </View>
-                    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+                    <View style={[styles.title, usuario === 'caficultor' ? styles.title1 : styles.title]}>
                         <Text style={[styles.header, !isDarkMode ? {color:colores.azul} : {color:colores.blanco}]}>{nameHeader}</Text>
                     </View>
-                    <View style={{ marginRight: '5%', marginLeft: 'auto' }}>
+                    <View style={{ }}>
                         <TouchableOpacity onPress={modalP}>
                             <Image
-                                style={{ width: 30, height: 30, marginTop: 10 }}
+                                style={{ width: 30, height: 30, marginTop: 10, marginRight:10 }}
                                 source={!isDarkMode ? require('../../assets/PerfilAzul.png') : require('../../assets/PerfilBlanco.png')}
                             />
                         </TouchableOpacity>
@@ -112,6 +112,17 @@ const HeaderPrincipal = ({ title }) => {
 const styles = StyleSheet.create({
     header:{ 
         fontSize: 20,
+        },
+    title:{
+        flex: 1, 
+        alignItems: 'center', 
+        justifyContent: 'center' 
+        },
+    title1:{
+        flex: 1, 
+        alignItems: 'center', 
+        justifyContent: 'center',
+        marginRight:-10
         }
 })
 

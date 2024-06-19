@@ -86,6 +86,17 @@ const ModalPerfil = ({visible, onClose, navegacionPerfil}) => {
                 Cerrar Sesion
               </Text>
             </TouchableOpacity>
+            {/* <View style={{flexDirection:'row'}}>
+            <Text style={{color:'#000'}}>Modo: </Text>
+            <Switch
+              trackColor={{false: '#767577', true: '#81b0ff'}}
+              thumbColor={isDarkMode ? '#f5dd4b' : '#f4f3f4'}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={toggleDarkMode}
+              value={isDarkMode}
+              style={{marginRight: 10}}
+            />
+            </View> */}
           </View>
         </View>
       </View>

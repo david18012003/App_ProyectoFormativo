@@ -48,7 +48,7 @@ const Login = () => {
     }
     console.log(formData)
     try {
-      const baseURL = `http://${ip}:3000/validacion`;
+      const baseURL = `${ip}/validacion`;
 
       const response = await axios.post(baseURL, formData);
       console.log(response.status);

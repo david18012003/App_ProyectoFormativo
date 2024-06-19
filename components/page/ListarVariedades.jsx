@@ -44,7 +44,7 @@ const ListarVariedades = () => {
 
   const ListarFinca = async () => {
     try {
-      const url = `http://${IP}:3000/variedades/listar`;
+      const url = `${IP}/variedades/listar`;
       const tokenAsyng = await AsyncStorage.getItem('token');
       const consulta = await axios.get(url, {headers: {token: tokenAsyng}});
       setFilteredData(consulta.data);
@@ -52,7 +52,7 @@ const ListarVariedades = () => {
   };
   const handleDesactivar = async(codigo)=>{
     try {
-        const url = `http://${IP}:3000/variedades/desactivar/${codigo}`
+        const url = `${IP}/variedades/desactivar/${codigo}`
         const tokenAsing = await AsyncStorage.getItem('token')
         const response = await axios.put(url,null,{headers:{token:tokenAsing}})
         if (response.status === 200) {
@@ -71,7 +71,7 @@ const ListarVariedades = () => {
   }
   const handleActivar = async(codigo)=>{
     try {
-        const url = `http://${IP}:3000/variedades/activar/${codigo}`
+        const url = `${IP}/variedades/activar/${codigo}`
         const tokenAsing = await AsyncStorage.getItem('token')
         const response = await axios.put(url,null,{headers:{token:tokenAsing}})
         if (response.status === 200) {

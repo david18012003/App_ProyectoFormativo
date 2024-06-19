@@ -28,7 +28,7 @@ const UserModel = ({closeModal, title, data, userData, userId}) => {
 
   const handleSubmit = async () => {
     try {
-      const baseURL = `http://${ip}:3000/usuarios/registrar`;
+      const baseURL = `${ip}/usuarios/registrar`;
       const token = await AsyncStorage.getItem('token');
       await axios.post(baseURL, formData, {headers: {token: token}});
       Alert.alert('Usuario registrado exitosamente');
@@ -46,7 +46,7 @@ const UserModel = ({closeModal, title, data, userData, userId}) => {
     try {
       console.log(userId);
       const token = await AsyncStorage.getItem('token');
-      const baseURL = `http://${ip}:3000/usuarios/actualizar/${userId}`;
+      const baseURL = `${ip}/usuarios/actualizar/${userId}`;
       const response = await axios.put(baseURL, formData, {
         headers: {token: token},
       });

@@ -25,7 +25,7 @@ const AnalisisModel = ({ closeModal, title, data, userData, userId }) => {
     const fetchlotes = async () => {
       try {
         const tokenAsyng = await AsyncStorage.getItem('token')
-        const response = await axios.get(`http://${IP}:3000/lotes/listar`,{headers:{token:tokenAsyng}});
+        const response = await axios.get(`${IP}/lotes/listar`,{headers:{token:tokenAsyng}});
         SetLotesOptions(response.data);
       } catch (error) {
         console.error("Error al cargar los lotes " + error);
@@ -75,7 +75,7 @@ const AnalisisModel = ({ closeModal, title, data, userData, userId }) => {
 
   const handleSubmit = async () => {
     try {
-      const baseURL = `http://${IP}:3000/muestras/crearMuestra`;
+      const baseURL = `${IP}/muestras/crearMuestra`;
       const token = await AsyncStorage.getItem("token");
       await axios.post(baseURL, formData, { headers: { token: token } });
       Alert.alert("Muestra registrada con éxito.");
@@ -91,7 +91,7 @@ const AnalisisModel = ({ closeModal, title, data, userData, userId }) => {
   const handleActualizar = async () => {
     try {
       const token = await AsyncStorage.getItem("token");
-      const baseURL = `http://${IP}:3000/muestras/actualizarMuestra/${userId}`;
+      const baseURL = `${IP}/muestras/actualizarMuestra/${userId}`;
       const response = await axios.put(baseURL, formData, {
         headers: { token: token },
       });

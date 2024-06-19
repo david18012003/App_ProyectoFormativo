@@ -44,16 +44,15 @@ const ListarFincas = () => {
 
   const ListarFinca = async () => {
     try {
-      const url = `http://${IP}:3000/fincas/listar`;
+      const url = `${IP}/fincas/listar`;
       const tokenAsyng = await AsyncStorage.getItem('token');
       const consulta = await axios.get(url, {headers: {token: tokenAsyng}});
       setFilteredData(consulta.data);
-      ListarFinca()
     } catch (error) {}
   };
   const handleDesactivar = async(codigo)=>{
     try {
-        const url = `http://${IP}:3000/fincas/desactivar/${codigo}`
+        const url = `${IP}/fincas/desactivar/${codigo}`
         const tokenAsing = await AsyncStorage.getItem('token')
         const response = await axios.put(url,null,{headers:{token:tokenAsing}})
         if (response.status === 200) {
@@ -72,7 +71,7 @@ const ListarFincas = () => {
   }
   const handleActivar = async(codigo)=>{
     try {
-        const url = `http://${IP}:3000/fincas/activar/${codigo}`
+        const url = `${IP}/fincas/activar/${codigo}`
         const tokenAsing = await AsyncStorage.getItem('token')
         const response = await axios.put(url,null,{headers:{token:tokenAsing}})
         if (response.status === 200) {
@@ -157,7 +156,6 @@ const ListarFincas = () => {
                   ? sharedStyles.conteinerDia
                   : sharedStyles.conteinerNoche,
               ]}>
-                
               <View style={sharedStyles.itemContainer}>
                 <Text
                   style={[
@@ -172,22 +170,6 @@ const ListarFincas = () => {
                     !isDarkMode ? sharedStyles.dia : sharedStyles.noche,
                   ]}>
                   {item.codigo}
-                </Text>
-              </View>
-              <View style={sharedStyles.itemContainer}>
-                <Text
-                  style={[
-                    sharedStyles.key,
-                    !isDarkMode ? sharedStyles.dia : sharedStyles.noche,
-                  ]}>
-                 Nombre Finca:
-                </Text>
-                <Text
-                  style={[
-                    sharedStyles.value,
-                    !isDarkMode ? sharedStyles.dia : sharedStyles.noche,
-                  ]}>
-                  {item.nombre_finca}
                 </Text>
               </View>
               <View style={sharedStyles.itemContainer}>

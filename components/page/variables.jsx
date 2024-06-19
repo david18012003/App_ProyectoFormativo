@@ -1,3 +1,4 @@
+// Código corregido y mejorado
 import React, {useState, useEffect} from 'react';
 import {
   View,
@@ -62,7 +63,7 @@ const ListarVariables = () => {
 
   const fetchData = async () => {
     try {
-      const baseURL = `http://${ip}:3000/variables/listarvariable`;
+      const baseURL = `${IP}/variables/listarvariable`;
       const tokenAsyng = await AsyncStorage.getItem('token');
       const response = await axios.get(baseURL, {headers: {token: tokenAsyng}});
 
@@ -85,7 +86,7 @@ const ListarVariables = () => {
     const fetchTipoAnalisis = async () => {
       try {
         const response = await axios.get(
-          `http://${IP}:3000/tipoanalisis/listar`,
+          `${IP}/tipoanalisis/listar`,
         );
         SetTipoAnalisiOptions(response.data);
       } catch (error) {
@@ -151,7 +152,7 @@ const ListarVariables = () => {
   const handleDesactivar = async userId => {
     try {
       const token = await AsyncStorage.getItem('token');
-      const baseURL = `http://${ip}:3000/variables/desactivarVariable/${userId}`;
+      const baseURL = `${IP}/variables/desactivarVariable/${userId}`;
       const response = await axios.put(baseURL, null, {
         headers: {token: token},
       });
@@ -174,7 +175,7 @@ const ListarVariables = () => {
   const handleActivar = async userId => {
     try {
       const token = await AsyncStorage.getItem('token');
-      const baseURL = `http://${ip}:3000/variables/activarVariable/${userId}`;
+      const baseURL = `${IP}/variables/activarVariable/${userId}`;
       const response = await axios.put(baseURL, null, {
         headers: {token: token},
       });

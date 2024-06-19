@@ -58,7 +58,7 @@ const PerfilUsuario = () => {
       const userId = user.identificacion;
 
       const token = await AsyncStorage.getItem('token');
-      const baseURL = `http://${IP}:3000/usuarios/actualizar/${userId}`;
+      const baseURL = `${IP}/usuarios/actualizar/${userId}`;
       const response = await axios.put(baseURL, formData, { headers: { token: token } });
       
       if (response.status === 201 || response.status === 200) {

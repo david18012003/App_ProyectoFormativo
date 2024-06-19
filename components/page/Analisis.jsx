@@ -48,7 +48,7 @@ const Analisis = () => {
 
     const fetchData = async () => {
         try {
-            const baseURL = `http://${ip}:3000/analisis/listar`;
+            const baseURL = `${ip}/analisis/listar`;
             const tokenAsyng = await AsyncStorage.getItem('token');
             const response = await axios.get(baseURL, { headers: { token: tokenAsyng } });
             console.log(response.data);
@@ -109,7 +109,7 @@ const Analisis = () => {
     const handleDesactivar = async (codigoId) => {
         try {
             const token = await AsyncStorage.getItem('token');
-            const baseURL = `http://${ip}:3000/analisis/desactivar/${codigoId}`;
+            const baseURL = `${ip}/analisis/desactivar/${codigoId}`;
             const response = await axios.put(baseURL, null, { headers: { token: token } });
 
             if (response.status === 200) {
@@ -130,7 +130,7 @@ const Analisis = () => {
     const handleActivar = async (codigoId) => {
         try {
             const token = await AsyncStorage.getItem('token');
-            const baseURL = `http://${ip}:3000/analisis/activar/${codigoId}`;
+            const baseURL = `${ip}/analisis/activar/${codigoId}`;
             const response = await axios.put(baseURL, null, { headers: { token: token } });
 
             if (response.status === 200) {

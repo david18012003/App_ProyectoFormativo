@@ -47,7 +47,7 @@ const UsuariosRegistro = () => {
         try {
             // const token = localStorage.getItem('token');
 
-        const baseURL = `http://${ip}:3000/usuarios/registrar`;
+        const baseURL = `${IP}/usuarios/registrar`;
         await axios.post(baseURL, formData);
         alert('Usuario registrado exitosamente');
 

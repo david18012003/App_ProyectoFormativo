@@ -11,8 +11,8 @@ import React, {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNavigation} from '@react-navigation/native';
 import {colores} from '../../public/Colores';
-import ListarVariables from '../page/variables';
-import ListarVariedades from '../page/ListarVariedades';
+// import ListarVariables from '../page/variables';
+// import ListarVariedades from '../page/ListarVariedades';
 
 const ModalSlidebar = ({visible, onClose}) => {
   const [formData, setFormData] = useState({
@@ -130,7 +130,7 @@ const ModalSlidebar = ({visible, onClose}) => {
             </View>
             </TouchableOpacity>
             <TouchableOpacity onPress={()=>{
-              navigation.navigate(ListarVariedades);
+              navigation.navigate('ListarVariedades');
               onClose()
             }}>
             <View style={[styles.conten, !isDarkMode ? {borderBottomColor: colores.azul,} : {borderBottomColor: colores.blanco,} ]}>

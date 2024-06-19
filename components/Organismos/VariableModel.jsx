@@ -17,7 +17,7 @@ const VariableModel = ({closeModal, title, data, userData, userId}) => {
     const fetchTipoAnalisis = async () => {
       try {
         const response = await axios.get(
-          `http://${IP}:3000/tipoanalisis/listar`,
+          `${IP}/tipoanalisis/listar`,
         );
         SetTipoAnalisiOptions(response.data);
       } catch (error) {
@@ -48,7 +48,7 @@ const VariableModel = ({closeModal, title, data, userData, userId}) => {
 
   const handleSubmit = async () => {
     try {
-      const baseURL = `http://${IP}:3000/variables/crearvariable`;
+      const baseURL = `${IP}/variables/crearvariable`;
       const token = await AsyncStorage.getItem('token');
       await axios.post(baseURL, formData, {headers: {token: token}});
       Alert.alert('Variable registrada con éxito.');
@@ -64,7 +64,7 @@ const VariableModel = ({closeModal, title, data, userData, userId}) => {
   const handleActualizar = async () => {
     try {
       const token = await AsyncStorage.getItem('token');
-      const baseURL = `http://${IP}:3000/variables/actualizarvariable/${userId}`;
+      const baseURL = `${IP}/variables/actualizarvariable/${userId}`;
       const response = await axios.put(baseURL, formData, {
         headers: {token: token},
       });
