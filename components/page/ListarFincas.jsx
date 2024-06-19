@@ -48,6 +48,7 @@ const ListarFincas = () => {
       const tokenAsyng = await AsyncStorage.getItem('token');
       const consulta = await axios.get(url, {headers: {token: tokenAsyng}});
       setFilteredData(consulta.data);
+      ListarFinca()
     } catch (error) {}
   };
   const handleDesactivar = async(codigo)=>{
@@ -156,6 +157,7 @@ const ListarFincas = () => {
                   ? sharedStyles.conteinerDia
                   : sharedStyles.conteinerNoche,
               ]}>
+                
               <View style={sharedStyles.itemContainer}>
                 <Text
                   style={[
@@ -170,6 +172,22 @@ const ListarFincas = () => {
                     !isDarkMode ? sharedStyles.dia : sharedStyles.noche,
                   ]}>
                   {item.codigo}
+                </Text>
+              </View>
+              <View style={sharedStyles.itemContainer}>
+                <Text
+                  style={[
+                    sharedStyles.key,
+                    !isDarkMode ? sharedStyles.dia : sharedStyles.noche,
+                  ]}>
+                 Nombre Finca:
+                </Text>
+                <Text
+                  style={[
+                    sharedStyles.value,
+                    !isDarkMode ? sharedStyles.dia : sharedStyles.noche,
+                  ]}>
+                  {item.nombre_finca}
                 </Text>
               </View>
               <View style={sharedStyles.itemContainer}>

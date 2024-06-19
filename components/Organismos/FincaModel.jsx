@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, Image } from 'react-native';
 import axios from 'axios';
 import { SelectList } from 'react-native-dropdown-select-list';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { IP } from '../page/IP';
 
 const FincaModel = () => {
   const [persona, setPersona] = useState({
+    nombre: '',
     dimension_mt2: '',
     fk_caficultor: '',
-    municipio:'',
-    vereda:'',
+    municipio: '',
+    vereda: '',
   });
 
   const [dataCaficultores, setDataCaficultores] = useState([]);
@@ -17,7 +19,7 @@ const FincaModel = () => {
 
   const urlCaficultores = `http://${IP}:3000/usuarios/listar`;
   const urlMunicipios = `http://${IP}:3000/municipios/listar`;
-  const url =`http://${IP}:3000/fincas/registrar`
+  const url = `http://${IP}:3000/fincas/registrar`;
 
   useEffect(() => {
     async function fetchData() {
@@ -56,177 +58,178 @@ const FincaModel = () => {
     }
   };
 
-  const enviarPersona = () => {
-    if (!persona.dimension_mt2 || !persona.fk_caficultor || !persona.municipio || !persona.vereda) {
+  const enviarPersona = async () => {
+    if (!persona.nombre || !persona.dimension_mt2 || !persona.fk_caficultor || !persona.municipio || !persona.vereda) {
       Alert.alert('Error', 'Por favor completa todos los campos');
       return;
     }
-  
+
     if (isNaN(persona.dimension_mt2)) {
       Alert.alert('Error', 'La dimensión debe ser números');
       return;
     }
-  
-    if(isNaN(persona.fk_caficultor)) {
+
+    if (isNaN(persona.fk_caficultor)) {
       Alert.alert('Error', 'El ID del caficultor debe ser un número');
       return;
     }
-  
+
     if (/\d/.test(persona.vereda)) {
       Alert.alert('Error', 'La vereda no puede contener números');
       return;
     }
-  
-    axios.post(url, persona)
-      .then((response) => {
-        console.log(response.data);
-        Alert.alert('Registro exitoso', 'La finca ha sido registrada correctamente');
-      })
-      .catch((error) => {
-        console.log(error);
-        Alert.alert('Error', 'Ha ocurrido un error al registrar la finca');
+
+    try {
+      const token = await AsyncStorage.getItem('token');
+      if (!token) {
+        Alert.alert('Error', 'Token no encontrado');
+        return;
+      }
+
+      console.log(token);
+      const response = await axios.post(url, persona, { headers: { token: token } });
+      console.log(response.data);
+      Alert.alert('Registro exitoso', 'La finca ha sido registrada correctamente');
+
+      setPersona({
+        nombre: '',
+        dimension_mt2: '',
+        fk_caficultor: '',
+        municipio: '',
+        vereda: '',
       });
-  
-    setPersona({
-      dimension_mt2: '',
-      fk_caficultor: '',
-      municipio:'',
-      vereda:'',
-    });
+    } catch (error) {
+      console.log(error);
+      Alert.alert('Error', 'Ha ocurrido un error al registrar la finca');
+    }
   };
-  
 
   return (
-    <View style={styles.container}>
-      <View style={styles.inputContainer2}>
-      <Text style={styles.title}>REGISTRAR</Text>
-      <View style={styles.inputContainer}>
-        <Text style={styles.inputLabel}>Dimension (mt2):</Text>
-        <TextInput
-          style={styles.input}
-          value={persona.dimension_mt2}
-          onChangeText={(dimension_mt2) => setPersona({ ...persona, dimension_mt2 })}
-        />
+    <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.innerContainer}>
+        <Image style={styles.image} source={require('../../assets/logoProyectoNegro.png')} />
+        <Text style={styles.title}>Registrar Finca</Text>
+        <View style={styles.formulario}>
+          <TextInput
+            style={styles.input}
+            value={persona.nombre}
+            onChangeText={(nombre) => setPersona({ ...persona, nombre })}
+            placeholder="Nombre"
+            placeholderTextColor="#000"
+          />
+          <TextInput
+            style={styles.input}
+            value={persona.dimension_mt2}
+            onChangeText={(dimension_mt2) => setPersona({ ...persona, dimension_mt2 })}
+            placeholder="Dimensión (mt2)"
+            placeholderTextColor="#000"
+            keyboardType="numeric"
+          />
+          <SelectList
+            setSelected={handleSelectCaficultor}
+            data={dataCaficultores}
+            selected={persona.fk_caficultor}
+            placeholder="Seleccione un caficultor"
+            placeholderTextColor="#000"
+            boxStyles={styles.selectBox}
+            dropdownStyles={styles.selectDropdown}
+          />
+          <SelectList
+            setSelected={handleSelectMunicipio}
+            data={dataMunicipios}
+            selected={persona.municipio}
+            placeholder="Seleccione un municipio"
+            placeholderTextColor="#000"
+            boxStyles={styles.selectBox}
+            dropdownStyles={styles.selectDropdown}
+          />
+          <TextInput
+            style={styles.input}
+            value={persona.vereda}
+            onChangeText={(vereda) => setPersona({ ...persona, vereda })}
+            placeholder="Vereda"
+            placeholderTextColor="#000"
+          />
+        </View>
+        <TouchableOpacity style={styles.button} onPress={enviarPersona}>
+          <Text style={styles.buttonText}>Enviar datos</Text>
+        </TouchableOpacity>
       </View>
-      <View style={styles.inputContainer3}>
-        <Text style={styles.inputLabel2}>Caficultor:</Text>
-        
-        <SelectList 
-          setSelected={handleSelectCaficultor} 
-          data={dataCaficultores} 
-          selected={persona.fk_caficultor} 
-        />
-      </View>
-      <View style={styles.inputContainer3}>
-        <Text style={styles.inputLabel2}>Municipio:</Text>
-        <SelectList 
-          setSelected={handleSelectMunicipio} 
-          data={dataMunicipios}
-          selected={persona.municipio} 
-        />
-      </View>
-      <View style={styles.inputContainer}>
-        <Text style={styles.inputLabel}>Vereda:</Text>
-        <TextInput
-          style={styles.input}
-          value={persona.vereda}
-          onChangeText={(vereda) => setPersona({ ...persona, vereda })}
-        />
-      </View>
-      </View>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={enviarPersona}
-      >
-        <Text style={styles.buttonText}>Enviar datos</Text>
-      </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#fff',
+  },
+  innerContainer: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#C8B6A6',
-    paddingHorizontal: 20,
+    padding: 20,
+  },
+  image: {
+    height: 150,
+    width: 150,
+    marginBottom: 20,
   },
   title: {
-    fontSize: 30,
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 30,
-    top:-29,
-     textAlign: 'center',
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
     marginBottom: 20,
-
+    color: '#00796B',
+  },
+  formulario: {
     width: '100%',
-  },
-  inputContainer3: {
-    flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 20,
-    left:-20,
-    width: 500,
-  },
-  inputContainer2: {
-    backgroundColor: '#EBDCCC',
-    height:500,
-    width:360,
-    borderRadius:15,
-    marginTop:-120,
-    paddingVertical:60,
-  },
-  inputLabel: {
-    width: 120,
-    marginRight: 10,
-    left:20,
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  inputLabel2: {
-    width: 120,
-    marginRight: 10,
-    left:40,
-    fontSize: 16,
-    fontWeight: 'bold',
   },
   input: {
-    flex: 1,
     height: 40,
-    borderWidth: 1,
-    left:-20,
-    borderColor: 'gray', 
-    borderRadius: 10,
+    width: '100%',
+    borderColor: '#00796B',
+    backgroundColor: '#E0F7FA',
+    borderRadius: 5,
+    borderWidth: 2,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+    color: '#00796B',
+  },
+  selectBox: {
+    width: '100%',
+    borderColor: '#00796B',
+    backgroundColor: '#E0F7FA',
+    borderRadius: 5,
+    borderWidth: 2,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+  },
+  selectDropdown: {
+    width: '100%',
+    borderColor: '#00796B',
+    backgroundColor: '#E0F7FA',
+    borderRadius: 5,
+    borderWidth: 2,
+    marginBottom: 10,
     paddingHorizontal: 10,
   },
   button: {
-    backgroundColor: 'green', 
-    paddingVertical: 10,
-    width:200,
-    borderRadius: 10,
-    left:-75,
-    bottom:-30,
+    height: 40,
+    width: '100%',
+    backgroundColor: '#00796B',
+    borderColor: '#00796B',
+    borderWidth: 2,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 10,
   },
   buttonText: {
-    color: '#fff', 
-    fontSize: 20,
+    color: '#E0F7FA',
+    fontSize: 16,
     fontWeight: 'bold',
-    textAlign: 'center', 
-  },
-  
-  selectContainer: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: '#ccc', 
-    borderRadius: 5,
-    paddingHorizontal: 10,
   },
 });
-
 
 export default FincaModel;
