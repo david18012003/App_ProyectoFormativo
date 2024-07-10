@@ -105,10 +105,12 @@ const ModalSlidebar = ({visible, onClose,}) => {
                 <Image  source={require('../../assets/fincas.png')}/>
                 <Text style={{fontSize:24}}> Fincas</Text>
               </View>
+              <TouchableOpacity onPress={()=>{navigation.navigate('ListarVariedades'); onClose();}}>
               <View style={{flexDirection:'row', margin:10, borderBottomColor:'#000', borderBottomWidth: 1}}>
                 <Image  source={require('../../assets/variedades.png')}/>
                 <Text style={{fontSize:24}}> Variedades</Text>
               </View>
+              </TouchableOpacity>
               <View style={{flexDirection:'row', margin:10, borderBottomColor:'#000', borderBottomWidth: 1}}>
                 <Image  source={require('../../assets/terreno.png')}/>
                 <Text style={{fontSize:24}}> Lotes</Text>

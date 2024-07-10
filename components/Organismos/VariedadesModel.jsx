@@ -6,22 +6,16 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import RNPickerSelect from "react-native-picker-select";
 import DatePicker from "@react-native-community/datetimepicker";
 
-const AnalisisModel = ({ closeModal, title, userData, userId, data }) => {
+const VariedadesModel = ({ closeModal, title, userData, userId, data }) => {
   const [formData, setFormData] = useState({
-    fecha: userData ? userData.fecha : "",
-    analista: userData ? userData.analista : "",
-    fk_muestra: userData ? userData.muestra : "",
-    fk_tipo_analisis: userData ? userData.tipo_analisis : "",
-    estado: userData ? userData.estado : "",
+    nombre: userData ? userData.nombre : "",
+    estado: userData ? userData.estado : 1,
   });
 
   useEffect(() => {
     if (title === "Actualizar" && userData) {
       setFormData({
-        fecha: userData.fecha,
-        analista: userData.analista,
-        fk_muestra: userData.muestra,
-        fk_tipo_analisis: userData.tipo_analisis,
+        nombre: userData.nombre,
         estado: userData.estado,
       });
     }
@@ -31,37 +25,18 @@ const AnalisisModel = ({ closeModal, title, userData, userId, data }) => {
     setFormData({ ...formData, [name]: value });
   };
 
-  const showDatePicker = async () => {
-    try {
-      const selectedDate = new Date(formData.fecha);
-      DatePicker.showDatePicker(
-        {
-          date: selectedDate,
-          mode: "date",
-        },
-        (event, date) => {
-          if (event !== "dismissed") {
-            setFormData({ ...formData, fecha: date });
-          }
-        }
-      );
-    } catch (error) {
-      console.error("Cannot open date picker", error);
-    }
-  };
-
   const handleSubmit = async () => {
     try {
-      const baseURL = `http://${IP}:3000/analisis/registrar`;
+      const baseURL = `http://${IP}:3000/variedades/registrar`;
       const token = await AsyncStorage.getItem("token");
       await axios.post(baseURL, formData, { headers: { token } });
-      Alert.alert("Análisis registrado con éxito.");
+      Alert.alert("Variedad registrada con éxito.");
       closeModal();
       data();
     } catch (error) {
       console.error("Error:", error);
       Alert.alert(
-        "Error al registrar el análisis. Por favor, revisa la consola para más detalles."
+        "Error al registrar la variedad. Por favor, revisa la consola para más detalles."
       );
     }
   };
@@ -69,17 +44,17 @@ const AnalisisModel = ({ closeModal, title, userData, userId, data }) => {
   const handleActualizar = async () => {
     try {
       const token = await AsyncStorage.getItem("token");
-      const baseURL = `http://${IP}:3000/analisis/actualizar/${userData.codigo}`;
+      const baseURL = `http://${IP}:3000/variedades/actualizar/${userData.codigo}`;
       const response = await axios.put(baseURL, formData, {
         headers: { token },
       });
       console.log(formData);
       if (response.status === 201) {
-        Alert.alert("Se actualizó con éxito el análisis");
+        Alert.alert("Se actualizó con éxito la variedad");
         closeModal();
         data();
       } else {
-        Alert.alert("Error al actualizar el análisis");
+        Alert.alert("Error al actualizar la variedad");
       }
     } catch (error) {
       console.error(error);
@@ -92,45 +67,13 @@ const AnalisisModel = ({ closeModal, title, userData, userId, data }) => {
       <Text style={styles.titulo}>{title}</Text>
 
       <View style={styles.formulario}>
-        <Text style={styles.etiqueta}>Fecha:</Text>
-        <TouchableOpacity onPress={showDatePicker}>
-          <Text style={styles.input}>{formData.fecha.toString()}</Text>
-        </TouchableOpacity>
-
-        <Text style={styles.etiqueta}>Analista:</Text>
+        <Text style={styles.etiqueta}>Nombre:</Text>
         <TextInput
           style={styles.input}
           placeholderTextColor="#999"
-          value={formData.analista}
-          onChangeText={(text) => handleInputChange("analista", text)}
-          placeholder="Ingrese el analista"
-        />
-
-        <Text style={styles.etiqueta}>Número de muestra:</Text>
-        <TextInput
-          style={styles.input}
-          placeholderTextColor="#999"
-          value={formData.fk_muestra}
-          onChangeText={(text) => handleInputChange("fk_muestra", text)}
-          placeholder="Ingrese el número de muestra"
-        />
-
-        <Text style={styles.etiqueta}>Tipo de análisis:</Text>
-        <RNPickerSelect
-          style={{
-            inputAndroid: styles.input,
-            inputIOS: styles.input,
-          }}
-          placeholder={{
-            label: "Selecciona el tipo de análisis",
-            value: null,
-          }}
-          value={formData.fk_tipo_analisis}
-          onValueChange={(value) => handleInputChange("fk_tipo_analisis", value)}
-          items={[
-            { label: "Físico", value: "Fisico" }, // Asegúrate de que los valores coincidan con los que esperas
-            { label: "Sensorial", value: "Sensorial" },
-          ]}
+          value={formData.nombre}
+          onChangeText={(text) => handleInputChange("nombre", text)}
+          placeholder="Ingrese el nombre de la variedad"
         />
 
         <Text style={styles.etiqueta}>Estado:</Text>
@@ -146,9 +89,8 @@ const AnalisisModel = ({ closeModal, title, userData, userId, data }) => {
           value={formData.estado}
           onValueChange={(value) => handleInputChange("estado", value)}
           items={[
-            { label: "Asignado", value: "asignado" },
-            { label: "Calificado", value: "calificado" },
-            { label: "Terminado", value: "terminado" },
+            { label: "Activo", value: 1 },
+            { label: "Inactivo", value: 2 },
           ]}
         />
       </View>
@@ -211,4 +153,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AnalisisModel;
+export default VariedadesModel;

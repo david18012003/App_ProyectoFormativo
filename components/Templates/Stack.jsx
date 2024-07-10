@@ -8,6 +8,7 @@ import PerfilUsuario from '../page/PerfilUsuario';
 import Analisis from '../page/Analisis';
 import ListarVariables from '../page/variables';
 import Muestras from '../page/muestras';
+import Variedades from '../page/Variedades';
 
 const Stack = createNativeStackNavigator()
 
@@ -32,6 +33,7 @@ const StackNav = () => {
         <Stack.Screen name='ListarAnalisis' component={Analisis} options={{headerShown:false}}/>
         <Stack.Screen name='ListarVariables' component={ListarVariables} options={{headerShown:false}}/>
         <Stack.Screen name='ListarMuestras' component={Muestras} options={{headerShown:false}}/>
+        <Stack.Screen name='ListarVariedades' component={Variedades} options={{headerShown:false}}/>
 
 
         <Stack.Screen name='Perfil' component={PerfilUsuario}   options={{

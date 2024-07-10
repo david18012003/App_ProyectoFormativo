@@ -5,9 +5,9 @@ import RNPickerSelect from 'react-native-picker-select';
 import { IP } from './IP';
 import HeaderPrincipal from '../Modales/HeaderPrincipal';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import ModalAnalisis from '../Modales/ModalAnalisis';
+import ModalVariedades from '../Modales/ModalVariedades';
 
-const Analisis = () => {
+const Variedades = () => {
     const [originalData, setOriginalData] = useState([]);
     const [filteredData, setFilteredData] = useState([]);
     const [searchTerm, setSearchTerm] = useState('');
@@ -16,8 +16,6 @@ const Analisis = () => {
     const [tituloModal, setTituloModal] = useState('');
     const [userData, setUserData] = useState(null);
     const [userId, setUserId] = useState(null);
-    const [btnColor, setBtnColor] = useState('#6495ED');
-    const [btnText, setBtnText] = useState('Activar');
 
     const ip = IP;
 
@@ -30,35 +28,25 @@ const Analisis = () => {
 
     const fetchData = async () => {
         try {
-            const baseURL = `http://${ip}:3000/analisis/listar`;
+            const baseURL = `http://${ip}:3000/variedades/listar`;
             const tokenAsync = await AsyncStorage.getItem('token');
-            console.log(tokenAsync)
             const response = await axios.get(baseURL, { headers: { token: tokenAsync } });
-            console.log(response.data);
+
             if (response.data && response.data.length > 0) {
-                console.log('Datos cargados con éxito');
+                const dataWithIds = response.data.map((variedad, index) => ({
+                    id: index + 1,
+                    codigo: variedad.codigo,
+                    nombre: variedad.nombre,
+                    estado: variedad.estado
+                }));
+                setOriginalData(dataWithIds);
+                setFilteredData(dataWithIds);
             } else {
                 console.log('La respuesta está vacía o no es un arreglo válido');
             }
-            const dataWithIds = response.data.map((analisis, index) => ({
-                id: index + 1,
-                codigo: analisis.codigo,
-                fecha: formatDate(analisis.fecha),
-                analista: analisis.analista,
-                muestra: analisis.muestra,
-                tipo_analisis: analisis.tipo_analisis,
-                estado: analisis.estado
-            }));
-            setOriginalData(dataWithIds);
-            setFilteredData(dataWithIds);
         } catch (error) {
             console.error('Error al obtener datos:', error.message);
         }
-    };
-
-    const formatDate = (dateString) => {
-        const date = new Date(dateString);
-        return date.toLocaleDateString();
     };
 
     useEffect(() => {
@@ -66,83 +54,53 @@ const Analisis = () => {
     }, []);
 
     useEffect(() => {
-        let filteredMuestras = originalData;
+        let filteredVariedades = originalData;
 
         if (searchTerm) {
-            filteredMuestras = filteredMuestras.filter(muestra =>
-                Object.values(muestra).some(value =>
+            filteredVariedades = filteredVariedades.filter(variedad =>
+                Object.values(variedad).some(value =>
                     String(value).toLowerCase().includes(searchTerm.toLowerCase())
                 )
             );
         }
 
         if (selectedStatus) {
-            filteredMuestras = filteredMuestras.filter(muestra => {
-                switch (selectedStatus) {
-                    case 'asignado':
-                        return muestra.estado === 'asignado';
-                    case 'calificado':
-                        return muestra.estado === 'calificado';
-                    case 'terminado':
-                        return muestra.estado === 'terminado';
-                    default:
-                        return true; // Return true for all other cases or when selectedStatus is null
-                }
+            filteredVariedades = filteredVariedades.filter(variedad => {
+                return selectedStatus === '' || 
+                       (selectedStatus === 'activo' && variedad.estado === 'activo') || 
+                       (selectedStatus === 'inactivo' && variedad.estado === 'inactivo');
             });
         }
 
-        setFilteredData(filteredMuestras);
+        setFilteredData(filteredVariedades);
     }, [searchTerm, selectedStatus, originalData]);
 
-    const handleActionButton = async (codigoId) => {
+    const handleActionButton = async (codigoId, estado) => {
         try {
             const token = await AsyncStorage.getItem('token');
+            let baseURL, successMessage, newEstado;
 
-            switch (btnText) {
-                case 'Activar':
-                    const baseURLActivar = `http://${ip}:3000/analisis/activar/${codigoId}`;
-                    const responseActivar = await axios.put(baseURLActivar, null, { headers: { token: token } });
-                    if (responseActivar.status === 200) {
-                        const mensajeActivar = responseActivar.data.message;
-                        Alert.alert(mensajeActivar);
-                        setBtnText('Desactivar');
-                        setBtnColor('#FF6347');
-                        fetchData();
-                    } else {
-                        console.error('Error al activar:', responseActivar.status);
-                        Alert.alert('Error al activar la muestra');
-                    }
-                    break;
-                case 'Desactivar':
-                    const baseURLDesactivar = `http://${ip}:3000/analisis/desactivar/${codigoId}`;
-                    const responseDesactivar = await axios.put(baseURLDesactivar, null, { headers: { token: token } });
-                    if (responseDesactivar.status === 200) {
-                        const mensajeDesactivar = responseDesactivar.data.message;
-                        Alert.alert(mensajeDesactivar);
-                        setBtnText('Calificar');
-                        setBtnColor('#32CD32');
-                        fetchData();
-                    } else {
-                        console.error('Error al desactivar:', responseDesactivar.status);
-                        Alert.alert('Error al desactivar la muestra');
-                    }
-                    break;
-                case 'Calificar':
-                    const baseURLCalificar = `http://${ip}:3000/analisis/calificar/${codigoId}`;
-                    const responseCalificar = await axios.put(baseURLCalificar, null, { headers: { token: token } });
-                    if (responseCalificar.status === 200) {
-                        const mensajeCalificar = responseCalificar.data.message;
-                        Alert.alert(mensajeCalificar);
-                        setBtnText('Activar');
-                        setBtnColor('#6495ED');
-                        fetchData();
-                    } else {
-                        console.error('Error al calificar:', responseCalificar.status);
-                        Alert.alert('Error al calificar la muestra');
-                    }
-                    break;
-                default:
-                    break;
+            if (estado === 'activo') { // Si está activo, lo desactiva
+                baseURL = `http://${ip}:3000/variedades/desactivar/${codigoId}`;
+                successMessage = 'Variedad desactivada con éxito';
+                newEstado = 'inactivo';
+            } else { // Si está inactivo, lo activa
+                baseURL = `http://${ip}:3000/variedades/activar/${codigoId}`;
+                successMessage = 'Variedad activada con éxito';
+                newEstado = 'activo';
+            }
+
+            const response = await axios.put(baseURL, null, { headers: { token } });
+            if (response.status === 200) {
+                Alert.alert(successMessage);
+                const updatedData = originalData.map(variedad =>
+                    variedad.codigo === codigoId ? { ...variedad, estado: newEstado } : variedad
+                );
+                setOriginalData(updatedData);
+                setFilteredData(updatedData);
+            } else {
+                console.error('Error al cambiar el estado:', response.status);
+                Alert.alert('Error al cambiar el estado de la variedad');
             }
         } catch (error) {
             console.error(error);
@@ -152,25 +110,24 @@ const Analisis = () => {
 
     return (
         <>
-            <HeaderPrincipal title='Análisis' />
+            <HeaderPrincipal title='Variedades' />
             <View style={styles.container}>
                 <View style={styles.inputContainer}>
                     <View style={styles.selectContainer}>
                         <TextInput
                             style={styles.input}
                             placeholderTextColor="#999"
-                            placeholder="Buscar muestra"
+                            placeholder="Buscar variedad"
                             onChangeText={setSearchTerm}
                             value={searchTerm}
                         />
                         <View style={styles.pickerContainer}>
                             <RNPickerSelect
                                 onValueChange={(value) => setSelectedStatus(value)}
-                                placeholder={{ label: "Estado", value: null }}
+                                placeholder={{ label: "Estado", value: '' }}
                                 items={[
-                                    { label: 'Asignado', value: 'asignado' },
-                                    { label: 'Calificado', value: 'calificado' },
-                                    { label: 'Terminado', value: 'terminado' },
+                                    { label: 'activo', value: 'activo' },
+                                    { label: 'inactivo', value: 'inactivo' },
                                 ]}
                                 style={pickerSelectStyles}
                                 useNativeAndroidPickerStyle={false}
@@ -179,43 +136,31 @@ const Analisis = () => {
                     </View>
                 </View>
                 <ScrollView style={styles.scrollView}>
-                    {filteredData.map((analisis) => (
-                        <View key={analisis.codigo} style={styles.userContainer}>
+                    {filteredData.map((variedad) => (
+                        <View key={variedad.codigo} style={styles.userContainer}>
                             <View style={styles.itemContainer}>
-                                <Text style={styles.key}>Código muestra:</Text>
-                                <Text style={[styles.value, { color: '#000' }]}>{analisis.codigo}</Text>
+                                <Text style={styles.key}>Código:</Text>
+                                <Text style={[styles.value, { color: '#000' }]}>{variedad.codigo}</Text>
                             </View>
                             <View style={styles.itemContainer}>
-                                <Text style={styles.key}>Fecha:</Text>
-                                <Text style={[styles.value, { color: '#000' }]}>{analisis.fecha}</Text>
-                            </View>
-                            <View style={styles.itemContainer}>
-                                <Text style={styles.key}>Analista:</Text>
-                                <Text style={[styles.value, { color: '#000' }]}>{analisis.analista}</Text>
-                            </View>
-                            <View style={styles.itemContainer}>
-                                <Text style={styles.key}>Muestra:</Text>
-                                <Text style={[styles.value, { color: '#000' }]}>{analisis.muestra}</Text>
-                            </View>
-                            <View style={styles.itemContainer}>
-                                <Text style={styles.key}>Tipo Análisis:</Text>
-                                <Text style={[styles.value, { color: '#000' }]}>{analisis.tipo_analisis}</Text>
+                                <Text style={styles.key}>Nombre:</Text>
+                                <Text style={[styles.value, { color: '#000' }]}>{variedad.nombre}</Text>
                             </View>
                             <View style={styles.itemContainer}>
                                 <Text style={styles.key}>Estado:</Text>
-                                <Text style={[styles.value, analisis.estado === 'asignado' ? styles.asignado : (analisis.estado === 'calificado' ? styles.calificado : styles.terminado)]}>
-                                    {analisis.estado}
+                                <Text style={[styles.value, variedad.estado === 'activo' ? styles.activo : styles.inactivo]}>
+                                    {variedad.estado === 'activo' ? 'Activo' : 'Inactivo'}
                                 </Text>
                             </View>
                             <View style={styles.contenedorBtn}>
                                 <View style={styles.itemContainer}>
-                                    <TouchableOpacity onPress={() => vista('Actualizar', analisis, analisis.codigo)} style={styles.button}>
+                                    <TouchableOpacity onPress={() => vista('Actualizar', variedad, variedad.codigo)} style={styles.button}>
                                         <Text style={styles.actualizar}>Actualizar</Text>
                                     </TouchableOpacity>
                                 </View>
                                 <View style={styles.buttonContainerD}>
-                                    <TouchableOpacity onPress={() => handleActionButton(analisis.codigo)} style={[styles.button, { backgroundColor: btnColor }]}>
-                                        <Text style={styles.actualizar}>{btnText}</Text>
+                                    <TouchableOpacity onPress={() => handleActionButton(variedad.codigo, variedad.estado)} style={[styles.button, { backgroundColor: variedad.estado === 'activo' ? '#FF6347' : '#6495ED' }]}>
+                                        <Text style={styles.actualizar}>{variedad.estado === 'activo' ? 'Desactivar' : 'Activar'}</Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>
@@ -227,21 +172,18 @@ const Analisis = () => {
                         <Image source={require('../../assets/mas.png')} style={styles.addButtonText} />
                     </TouchableOpacity>
                 </View>
-                <ModalAnalisis visible={viewModal} onClose={vista} title={tituloModal} data={fetchData} userData={userData} userId={userId} />
+                <ModalVariedades visible={viewModal} onClose={vista} title={tituloModal} data={fetchData} userData={userData} userId={userId} />
             </View>
         </>
     );
 };
 
 const styles = StyleSheet.create({
-    asignado: {
-        color: 'blue',
-    },
-    calificado: {
-        color: 'orange',
-    },
-    terminado: {
+    activo: {
         color: 'green',
+    },
+    inactivo: {
+        color: 'red',
     },
     scrollView: {
         flex: 1,
@@ -383,4 +325,4 @@ const pickerSelectStyles = StyleSheet.create({
     },
 });
 
-export default Analisis;
+export default Variedades;
