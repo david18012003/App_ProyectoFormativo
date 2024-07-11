@@ -16,8 +16,6 @@ const Analisis = () => {
     const [tituloModal, setTituloModal] = useState('');
     const [userData, setUserData] = useState(null);
     const [userId, setUserId] = useState(null);
-    const [btnColor, setBtnColor] = useState('#6495ED');
-    const [btnText, setBtnText] = useState('Activar');
 
     const ip = IP;
 
@@ -32,14 +30,7 @@ const Analisis = () => {
         try {
             const baseURL = `http://${ip}:3000/analisis/listar`;
             const tokenAsync = await AsyncStorage.getItem('token');
-            console.log(tokenAsync)
             const response = await axios.get(baseURL, { headers: { token: tokenAsync } });
-            console.log(response.data);
-            if (response.data && response.data.length > 0) {
-                console.log('Datos cargados con éxito');
-            } else {
-                console.log('La respuesta está vacía o no es un arreglo válido');
-            }
             const dataWithIds = response.data.map((analisis, index) => ({
                 id: index + 1,
                 codigo: analisis.codigo,
@@ -94,55 +85,40 @@ const Analisis = () => {
         setFilteredData(filteredMuestras);
     }, [searchTerm, selectedStatus, originalData]);
 
-    const handleActionButton = async (codigoId) => {
+    const handleActivateDeactivate = async (codigoId, currentStatus) => {
         try {
             const token = await AsyncStorage.getItem('token');
+            const action = currentStatus === 'asignado' ? 'desactivar' : 'activar';
+            const baseURL = `http://${ip}:3000/analisis/${action}/${codigoId}`;
+            const response = await axios.put(baseURL, null, { headers: { token: token } });
 
-            switch (btnText) {
-                case 'Activar':
-                    const baseURLActivar = `http://${ip}:3000/analisis/activar/${codigoId}`;
-                    const responseActivar = await axios.put(baseURLActivar, null, { headers: { token: token } });
-                    if (responseActivar.status === 200) {
-                        const mensajeActivar = responseActivar.data.message;
-                        Alert.alert(mensajeActivar);
-                        setBtnText('Desactivar');
-                        setBtnColor('#FF6347');
-                        fetchData();
-                    } else {
-                        console.error('Error al activar:', responseActivar.status);
-                        Alert.alert('Error al activar la muestra');
-                    }
-                    break;
-                case 'Desactivar':
-                    const baseURLDesactivar = `http://${ip}:3000/analisis/desactivar/${codigoId}`;
-                    const responseDesactivar = await axios.put(baseURLDesactivar, null, { headers: { token: token } });
-                    if (responseDesactivar.status === 200) {
-                        const mensajeDesactivar = responseDesactivar.data.message;
-                        Alert.alert(mensajeDesactivar);
-                        setBtnText('Calificar');
-                        setBtnColor('#32CD32');
-                        fetchData();
-                    } else {
-                        console.error('Error al desactivar:', responseDesactivar.status);
-                        Alert.alert('Error al desactivar la muestra');
-                    }
-                    break;
-                case 'Calificar':
-                    const baseURLCalificar = `http://${ip}:3000/analisis/calificar/${codigoId}`;
-                    const responseCalificar = await axios.put(baseURLCalificar, null, { headers: { token: token } });
-                    if (responseCalificar.status === 200) {
-                        const mensajeCalificar = responseCalificar.data.message;
-                        Alert.alert(mensajeCalificar);
-                        setBtnText('Activar');
-                        setBtnColor('#6495ED');
-                        fetchData();
-                    } else {
-                        console.error('Error al calificar:', responseCalificar.status);
-                        Alert.alert('Error al calificar la muestra');
-                    }
-                    break;
-                default:
-                    break;
+            if (response.status === 200) {
+                const mensaje = response.data.message;
+                Alert.alert(mensaje);
+                fetchData();
+            } else {
+                console.error(`Error al ${action} muestra:`, response.status);
+                Alert.alert(`Error al ${action} muestra`);
+            }
+        } catch (error) {
+            console.error(error);
+            Alert.alert('Error al realizar la acción');
+        }
+    };
+
+    const handleCalificar = async (codigoId) => {
+        try {
+            const token = await AsyncStorage.getItem('token');
+            const baseURL = `http://${ip}:3000/analisis/calificar/${codigoId}`;
+            const response = await axios.put(baseURL, null, { headers: { token: token } });
+
+            if (response.status === 200) {
+                const mensaje = response.data.message;
+                Alert.alert(mensaje);
+                fetchData();
+            } else {
+                console.error('Error al calificar:', response.status);
+                Alert.alert('Error al calificar la muestra');
             }
         } catch (error) {
             console.error(error);
@@ -214,8 +190,13 @@ const Analisis = () => {
                                     </TouchableOpacity>
                                 </View>
                                 <View style={styles.buttonContainerD}>
-                                    <TouchableOpacity onPress={() => handleActionButton(analisis.codigo)} style={[styles.button, { backgroundColor: btnColor }]}>
-                                        <Text style={styles.actualizar}>{btnText}</Text>
+                                    <TouchableOpacity onPress={() => handleActivateDeactivate(analisis.codigo, analisis.estado)} style={styles.button}>
+                                        <Text style={styles.actualizar}>{analisis.estado === 'asignado' ? 'Terminar' : 'Asignar'}</Text>
+                                    </TouchableOpacity>
+                                </View>
+                                <View style={styles.buttonContainerD}>
+                                    <TouchableOpacity onPress={() => handleCalificar(analisis.codigo)} style={styles.buttonCalificar}>
+                                        <Text style={styles.actualizar}>Calificar</Text>
                                     </TouchableOpacity>
                                 </View>
                             </View>
