@@ -24,14 +24,22 @@ const FincaModel = () => {
   useEffect(() => {
     async function fetchData() {
       try {
-        const responseCaficultores = await axios.get(urlCaficultores);
+        const token = await AsyncStorage.getItem('token');
+        if (!token) {
+          Alert.alert('Error', 'Token no encontrado');
+          return;
+        }
+
+        const headers = { token: token };
+
+        const responseCaficultores = await axios.get(urlCaficultores, { headers });
         console.log('Caficultores response:', responseCaficultores.data);
         const tempCaficultores = responseCaficultores.data.usuarios.map((item) => {
           return { key: item.identificacion.toString(), value: item.nombre };
         });
         setDataCaficultores(tempCaficultores);
 
-        const responseMunicipios = await axios.get(urlMunicipios);
+        const responseMunicipios = await axios.get(urlMunicipios, { headers });
         console.log('Municipios response:', responseMunicipios.data);
         const tempMunicipios = responseMunicipios.data.map((item) => {
           return { key: item.id_municipio.toString(), value: item.nombre };
